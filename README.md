@@ -1,2 +1,2 @@
 # GeneticBatman
-A Genetic Algorithm that trains Batman to protect Gotham, using CUDA.
+A Genetic Algorithm that trains a player to go through a platformer level to define it's difficulty, using CUDA to optimize performance.
