@@ -8,12 +8,13 @@ from bckg_obj import BackgroundObject
 
 pygame.init()
 
-# color constants
+# color definitions
 BLUE = (57, 177, 235)
 BROWN = (145, 56, 49)
 GREEN = (14, 112, 12)
 RED = (189, 9, 42)
 
+# constants
 TITLE = "GENETIC BATMAN"
 SCR_W = 700
 SCR_H = 700
@@ -47,7 +48,7 @@ building2.rect.x = SCR_W - building2.rect.width
 building2.rect.y = SCR_H - building2.rect.height - floor.rect.height
 sprite_group.add(building2)
 
-
+# MAIN LOOP
 quit = False
 while not quit:
     for event in pygame.event.get():
@@ -61,6 +62,5 @@ while not quit:
     pygame.display.flip()
 
     clock.tick(60)
-
 
 pygame.quit()
