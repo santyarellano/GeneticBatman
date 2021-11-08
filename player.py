@@ -27,6 +27,7 @@ class Player(pygame.sprite.Sprite):
     def jump(self):
         if not self.is_jumping:
             self.y_spd = -self.jump_power
+            self.is_jumping = True
 
     def pressLeft(self):
         self.left = 1

@@ -28,24 +28,20 @@ pygame.display.set_caption(TITLE)
 # game constants
 GRAVITY = 0.5
 HUMAN_CONTROL = True
+TILE_SIZE = 30
 
 clock = pygame.time.Clock()
 
 sprite_group = pygame.sprite.Group()
 
 # platforms
-floor = Floor(BROWN, SCR_W, 100)
+floor = Floor(BROWN, SCR_W / 2, TILE_SIZE)
 floor.rect.x = 0
-floor.rect.y = SCR_H - floor.rect.height
+floor.rect.y = SCR_H - floor.rect.height * 2
 sprite_group.add(floor)
 
-middleFloor = Floor(BROWN, SCR_W / 2, 30)
-middleFloor.rect.x = (SCR_W / 2) - (middleFloor.rect.width / 2)
-middleFloor.rect.y = (SCR_H / 2) - (middleFloor.rect.height / 2)
-sprite_group.add(middleFloor)
-
 # player
-player = Player(GREEN, 30, GRAVITY)
+player = Player(GREEN, TILE_SIZE, GRAVITY)
 player.rect.x = 50
 player.rect.y = floor.rect.y - (player.rect.width * 2)
 sprite_group.add(player)
@@ -63,8 +59,9 @@ while not quit:
     if pygame.sprite.collide_mask(player, floor):
         player.y_spd = 0
         player.is_jumping = False
-    else:
-        player.is_jumping = True
+        # TODO: maybe this could be improved
+        if (player.rect.y + player.rect.height) > floor.rect.y:
+            player.rect.y = floor.rect.y - player.rect.height
 
     # Key events (ONLY ALLOWED WHEN A HUMAN IS PLAYING)
     if HUMAN_CONTROL:
@@ -72,12 +69,12 @@ while not quit:
         if keys[pygame.K_SPACE]:
             player.jump()
 
-        if keys[pygame.K_LEFT]:
+        if keys[pygame.K_a]:
             player.pressLeft()
         else:
             player.releaseLeft()
 
-        if keys[pygame.K_RIGHT]:
+        if keys[pygame.K_d]:
             player.pressRight()
         else:
             player.releaseRight()
