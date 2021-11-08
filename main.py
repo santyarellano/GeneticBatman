@@ -10,9 +10,10 @@ import settings
 from player import Player
 from floor import Floor
 from goal import Goal
+from population import Population
 
 
-# constants
+# setup
 level = level_reader.getLevel(settings.LEVEL_NAME)
 settings.SCR_W = len(level[0]) * settings.TILE_SIZE
 settings.SCR_H = len(level) * settings.TILE_SIZE
@@ -46,14 +47,18 @@ for row in level:
             groups.sprite_group.add(goal)
             groups.top_layer.add(goal)
         elif cell == 9:  # player
+            settings.PLAYER_SPAWN_X = x * settings.TILE_SIZE
+            settings.PLAYER_SPAWN_Y = y * settings.TILE_SIZE
+
             if settings.HUMAN_CONTROL:
                 player = Player(colors.GREEN, settings.TILE_SIZE, settings.GRAVITY, False)
+                player.rect.x = settings.PLAYER_SPAWN_X
+                player.rect.y = settings.PLAYER_SPAWN_Y
+                groups.sprite_group.add(player)
+                groups.top_layer.add(player)
             else:
-                player = Player(colors.GREEN, settings.TILE_SIZE, settings.GRAVITY, True)
-            player.rect.x = x * settings.TILE_SIZE
-            player.rect.y = y * settings.TILE_SIZE
-            groups.sprite_group.add(player)
-            groups.top_layer.add(player)
+                population = Population(settings.POPULATION_SIZE)
+            
         else:
             print("there's an error in the level data")
 
@@ -62,7 +67,7 @@ for row in level:
 
 # MAIN LOOP
 quit = False
-while not quit and player is not None:
+while not quit:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             quit = True
