@@ -1,4 +1,5 @@
 import random
+import copy
 from enum import Enum, auto
 
 import settings
@@ -23,12 +24,16 @@ class Brain:
             self.instructions.append(action)
 
     def clone(self):
-        clone = Brain()
-        clone.instructions = list(self.instructions)
-        return clone
+        return copy.deepcopy(self)
     
     def mutate(self):
+        new_instructions = []
         for step in self.instructions:
             r = random.random()
             if r < settings.MUTATION_RATE:
-                step = random.choice(list(Options))
+                new_step = random.choice(list(Options))
+                new_instructions.append(new_step)
+            else:
+                new_instructions.append(step)
+                
+        self.instructions = new_instructions

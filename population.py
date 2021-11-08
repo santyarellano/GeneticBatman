@@ -1,4 +1,5 @@
 import random
+import copy
 
 import colors
 import settings
@@ -37,7 +38,7 @@ class Population:
 
         # keep best players from previous generation
         top_players = self.getBestN()
-        print(len(top_players))
+        #print(len(top_players))
         for p in top_players:
             new_players.append(p)
             groups.players_group.add(p)
@@ -76,7 +77,6 @@ class Population:
             if p.fitness in topN:
                 ret.append(p)
         
-        print(topN[0])
         return ret
 
 
@@ -92,4 +92,5 @@ class Population:
         
     def mutateChildren(self):
         for p in self.players:
+            old = copy.copy(p.brain.instructions)
             p.brain.mutate()
