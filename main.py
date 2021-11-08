@@ -98,7 +98,8 @@ while not quit:
         groups.players_group.draw(SCR)
 
         # show generation
-        text_renderer = font.render(f'Generation: {population.generation}', False, colors.GREEN)
+        txt = f'Generation: {population.generation}. Population: {len(population.players)}'
+        text_renderer = font.render(txt, False, colors.GREEN)
         SCR.blit(text_renderer, (20,20))
 
         pygame.display.flip()
