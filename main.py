@@ -1,5 +1,6 @@
 # main imports
 import builtins
+from typing import Tuple
 import pygame
 
 # custom file imports
@@ -26,6 +27,7 @@ pygame.display.set_caption(TITLE)
 
 # game constants
 GRAVITY = 0.5
+HUMAN_CONTROL = True
 
 clock = pygame.time.Clock()
 
@@ -60,15 +62,25 @@ while not quit:
     # check if player is touching the floor (to do: modify this to apply it to all physical objs)
     if pygame.sprite.collide_mask(player, floor):
         player.y_spd = 0
-        player.is_jumping = True
-    else:
         player.is_jumping = False
+    else:
+        player.is_jumping = True
 
-    # Key events
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_SPACE]:
-        if player.is_jumping:
-            player.y_spd = -player.jump_power
+    # Key events (ONLY ALLOWED WHEN A HUMAN IS PLAYING)
+    if HUMAN_CONTROL:
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_SPACE]:
+            player.jump()
+
+        if keys[pygame.K_LEFT]:
+            player.pressLeft()
+        else:
+            player.releaseLeft()
+
+        if keys[pygame.K_RIGHT]:
+            player.pressRight()
+        else:
+            player.releaseRight()
 
     # draw in screen
     SCR.fill(BLACK)
