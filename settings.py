@@ -1,0 +1,9 @@
+TITLE = "Genetic Level Checker"
+SCR_W = 0
+SCR_H = 0
+
+GRAVITY = 0.5
+HUMAN_CONTROL = True
+TILE_SIZE = 30
+LEVEL_NAME = 'level.csv'
+DEFAULT_BRAIN_SIZE = 400
