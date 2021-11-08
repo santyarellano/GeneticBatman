@@ -48,20 +48,28 @@ class Player(pygame.sprite.Sprite):
         self.y_spd += self.gravity
         
         # check if player is colliding with floor
-        hits_floor = pygame.sprite.spritecollideany(self, groups.floor_tiles)
-        if hits_floor:
-            # vertical hit
-            if self.rect.y < hits_floor.rect.y:
-                self.y_spd = 0
-                self.is_jumping = False
-                self.rect.y = hits_floor.rect.y - self.rect.height + 1
-            elif self.y_spd < 0:
-                self.y_spd = 0
-            
-            # horizontal hit 
-            #   from left
-            if self.rect.x < hits_floor.rect.x:
-                self.right = 0
+        for tile in groups.floor_tiles:
+            if pygame.sprite.collide_rect(self, tile):
+                # check vertical collision
+                if self.rect.centery < tile.rect.y: # from top
+                    self.y_spd = 0
+                    self.rect.y = tile.rect.y - self.rect.height + 1
+                    self.is_jumping = False
+                elif self.rect.centery > (tile.rect.y + tile.rect.height): # from bottom
+                    self.y_spd = 0
+                    self.rect.y = tile.rect.y + tile.rect.height
+
+                # check horizontal collision
+                #   should be within same vertical space
+                if self.rect.centery >= (tile.rect.centery - tile.rect.height/3): 
+                    if self.rect.centery <= (tile.rect.centery + tile.rect.height/3): 
+                        # now we can check the horizontal collision
+                        if self.rect.centerx < tile.rect.x: # from left
+                            self.right = 0
+                            self.rect.x = tile.rect.x - self.rect.width
+                        elif self.rect.centerx > (tile.rect.x + tile.rect.width): # from right
+                            self.left = 0
+                            self.rect.x = tile.rect.x + tile.rect.width
 
         self.dir = (self.right - self.left)
         self.rect.x += self.dir * self.walk_spd

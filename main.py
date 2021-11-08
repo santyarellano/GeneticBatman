@@ -96,7 +96,7 @@ while not quit and player is not None:
 
     # draw in screen
     SCR.fill(BLACK)
-    # groups.sprite_group.draw(SCR)
+    # groups.sprite_group.draw(SCR) <- commented this to move to a layered structure
     groups.floor_tiles.draw(SCR)
     groups.top_layer.draw(SCR)
 
