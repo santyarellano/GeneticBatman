@@ -2,6 +2,8 @@ import pygame
 import groups
 
 import settings
+import helpers
+import colors
 from brain import Options
 from brain import Brain
 
@@ -32,6 +34,8 @@ class Player(pygame.sprite.Sprite):
         self.is_ai = is_ai
         self.is_dead = False
         self.reached_goal = False
+
+        self.fitness = 0
         
         if is_ai:
             self.brain_step = 0
@@ -54,6 +58,19 @@ class Player(pygame.sprite.Sprite):
     def releaseRight(self):
         self.right = 0
     
+    def calculateFitness(self):
+        d = helpers.dist(self, settings.goal)
+        d *= d
+        self.fitness = 1/d
+    
+    def getChild(self):
+        child = Player(colors.GREEN, settings.TILE_SIZE, settings.GRAVITY, True)
+        child.rect.x = settings.PLAYER_SPAWN_X
+        child.rect.y = settings.PLAYER_SPAWN_Y
+        child.brain = self.brain.clone()
+        return child
+
+    
     def executeNextBrainStep(self):
         # process brain step
         if self.brain.instructions[self.brain_step] == Options.none:
@@ -75,7 +92,8 @@ class Player(pygame.sprite.Sprite):
                 self.releaseLeft()
                 self.releaseRight()
                 if self.brain_step >= len(self.brain.instructions):
-                    pass
+                    if not self.reached_goal:
+                        self.is_dead = True
                 else:
                     self.executeNextBrainStep()
 

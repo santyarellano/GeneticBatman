@@ -21,3 +21,14 @@ class Brain:
         for i in range(self.size):
             action = random.choice(list(Options))
             self.instructions.append(action)
+
+    def clone(self):
+        clone = Brain()
+        clone.instructions = list(self.instructions)
+        return clone
+    
+    def mutate(self):
+        for step in self.instructions:
+            r = random.random()
+            if r < settings.MUTATION_RATE:
+                step = random.choice(list(Options))
