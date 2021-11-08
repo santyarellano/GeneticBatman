@@ -1,4 +1,5 @@
 import pygame
+import groups
 
 BLACK = (0, 0, 0)
 
@@ -45,3 +46,9 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += self.y_spd
         self.y_spd += self.gravity
         self.rect.x += (self.right - self.left) * self.walk_spd
+        # check if player is colliding with floor
+        hits_floor = pygame.sprite.spritecollideany(self, groups.floor_tiles)
+        if hits_floor:
+            self.y_spd = 0
+            self.is_jumping = False
+            self.rect.y = hits_floor.rect.y - self.rect.height + 1

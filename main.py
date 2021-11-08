@@ -1,17 +1,14 @@
 # main imports
+import groups
+import level_reader
+from player import Player
+from bckg_obj import BackgroundObject
+from floor import Floor
 from typing import Match
 import pygame
+pygame.init()
 
 # custom file imports
-from floor import Floor
-from bckg_obj import BackgroundObject
-from player import Player
-import level_reader
-
-# testing area
-
-# ========== INIT ==============
-pygame.init()
 
 # color definitions
 BLACK = (0, 0, 0)
@@ -39,10 +36,12 @@ pygame.display.set_caption(TITLE)
 
 clock = pygame.time.Clock()
 
+'''
 sprite_group = pygame.sprite.Group()
 floor_tiles = pygame.sprite.Group()
-characters = pygame.sprite.Group()
+top_layer = pygame.sprite.Group()
 player = None
+'''
 
 # load level
 x = 0
@@ -56,14 +55,14 @@ for row in level:
             tile = Floor(BROWN, TILE_SIZE, TILE_SIZE)
             tile.rect.x = x * TILE_SIZE
             tile.rect.y = y * TILE_SIZE
-            sprite_group.add(tile)
-            floor_tiles.add(tile)
+            groups.sprite_group.add(tile)
+            groups.floor_tiles.add(tile)
         elif cell == 9:  # player
             player = Player(GREEN, TILE_SIZE, GRAVITY)
             player.rect.x = x * TILE_SIZE
             player.rect.y = y * TILE_SIZE
-            sprite_group.add(player)
-            characters.add(player)
+            groups.sprite_group.add(player)
+            groups.top_layer.add(player)
         else:
             print("there's an error in the level data")
 
@@ -77,12 +76,7 @@ while not quit and player is not None:
         if event.type == pygame.QUIT:
             quit = True
 
-    sprite_group.update()
-
-    # check if player is colliding with floor
-    if pygame.sprite.spritecollideany(player, floor_tiles):
-        player.y_spd = 0
-        player.is_jumping = False
+    groups.sprite_group.update()
 
     # Key events (ONLY ALLOWED WHEN A HUMAN IS PLAYING)
     if HUMAN_CONTROL:
@@ -102,9 +96,9 @@ while not quit and player is not None:
 
     # draw in screen
     SCR.fill(BLACK)
-    # sprite_group.draw(SCR)
-    floor_tiles.draw(SCR)
-    characters.draw(SCR)
+    # groups.sprite_group.draw(SCR)
+    groups.floor_tiles.draw(SCR)
+    groups.top_layer.draw(SCR)
 
     pygame.display.flip()
 
