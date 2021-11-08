@@ -27,7 +27,7 @@ class Population:
         
     def allFinished(self):
         for p in self.players:
-            if not p.is_dead and not p.reached_goal:
+            if not p.finished:
                 return False
         return True
 
@@ -38,7 +38,6 @@ class Population:
 
         # keep best players from previous generation
         top_players = self.getBestN()
-        #print(len(top_players))
         for p in top_players:
             new_players.append(p)
             groups.players_group.add(p)

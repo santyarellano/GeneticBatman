@@ -55,7 +55,7 @@ for row in level:
                 player = Player(colors.GREEN, settings.TILE_SIZE, settings.GRAVITY, False)
                 player.rect.x = settings.PLAYER_SPAWN_X
                 player.rect.y = settings.PLAYER_SPAWN_Y
-                groups.top_layer.add(player)
+                groups.players_group.add(player)
             else:
                 population = Population(settings.POPULATION_SIZE)
             
@@ -91,16 +91,17 @@ while not quit:
             player.releaseRight()
 
     # draw in screen
-    if population.generation > settings.GENERATIONS_WITHOUT_RENDER:
+    if settings.HUMAN_CONTROL or (population.generation > settings.GENERATIONS_WITHOUT_RENDER):
         SCR.fill(colors.BLACK)
         groups.floor_tiles.draw(SCR)
         groups.top_layer.draw(SCR)
         groups.players_group.draw(SCR)
 
         # show generation
-        txt = f'Generation: {population.generation}. Population: {len(population.players)}'
-        text_renderer = font.render(txt, False, colors.GREEN)
-        SCR.blit(text_renderer, (20,20))
+        if not settings.HUMAN_CONTROL:
+            txt = f'Generation: {population.generation}. Population: {len(population.players)}'
+            text_renderer = font.render(txt, False, colors.WHITE)
+            SCR.blit(text_renderer, (20,20))
 
         pygame.display.flip()
 

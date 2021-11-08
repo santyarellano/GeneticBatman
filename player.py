@@ -34,6 +34,7 @@ class Player(pygame.sprite.Sprite):
         self.is_ai = is_ai
         self.is_dead = False
         self.reached_goal = False
+        self.finished = False
 
         self.fitness = 0
         
@@ -59,9 +60,12 @@ class Player(pygame.sprite.Sprite):
         self.right = 0
     
     def calculateFitness(self):
-        d = helpers.dist(self, settings.goal)
-        d *= d
-        self.fitness = 1/d * 1000
+        if self.is_dead:
+            self.fitness = 0
+        else:
+            d = helpers.dist(self, settings.goal)
+            d *= d
+            self.fitness = 1/d * 1000
     
     def getChild(self):
         child = Player(colors.GREEN, settings.TILE_SIZE, settings.GRAVITY, True)
@@ -85,7 +89,7 @@ class Player(pygame.sprite.Sprite):
         self.brain_step += 1
 
     def update(self):
-        if not self.is_dead and not self.reached_goal:
+        if not self.is_dead and not self.reached_goal and not self.finished:
             # act according to brain if necessary
             if self.is_ai:
                 # reset movements
@@ -93,7 +97,7 @@ class Player(pygame.sprite.Sprite):
                 self.releaseRight()
                 if self.brain_step >= len(self.brain.instructions):
                     if not self.reached_goal:
-                        self.is_dead = True
+                        self.finished = True
                 else:
                     self.executeNextBrainStep()
 
@@ -130,9 +134,12 @@ class Player(pygame.sprite.Sprite):
             # check if dead
             if self.rect.x > settings.SCR_W or (self.rect.x + self.rect.width) < 0:
                 self.is_dead = True
+                self.finished = True
             if self.rect.y > settings.SCR_H or (self.rect.y + self.rect.height) < 0:
                 self.is_dead = True
+                self.finished = True
 
             # check if reached goal
             if pygame.sprite.collide_rect(self, settings.goal):
                 self.reached_goal = True
+                self.finished = True
