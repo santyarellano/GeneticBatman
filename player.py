@@ -31,6 +31,7 @@ class Player(pygame.sprite.Sprite):
         self.is_jumping = False
         self.is_ai = is_ai
         self.is_dead = False
+        self.reached_goal = False
         
         if is_ai:
             self.brain_step = 0
@@ -67,7 +68,7 @@ class Player(pygame.sprite.Sprite):
         self.brain_step += 1
 
     def update(self):
-        if not self.is_dead:
+        if not self.is_dead and not self.reached_goal:
             # act according to brain if necessary
             if self.is_ai:
                 # reset movements
@@ -113,3 +114,7 @@ class Player(pygame.sprite.Sprite):
                 self.is_dead = True
             if self.rect.y > settings.SCR_H or (self.rect.y + self.rect.height) < 0:
                 self.is_dead = True
+
+            # check if reached goal
+            if pygame.sprite.collide_rect(self, settings.goal):
+                self.reached_goal = True

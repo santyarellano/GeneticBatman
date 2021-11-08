@@ -46,6 +46,7 @@ for row in level:
             goal.rect.y = y * settings.TILE_SIZE
             groups.sprite_group.add(goal)
             groups.top_layer.add(goal)
+            settings.goal = goal
         elif cell == 9:  # player
             settings.PLAYER_SPAWN_X = x * settings.TILE_SIZE
             settings.PLAYER_SPAWN_Y = y * settings.TILE_SIZE
