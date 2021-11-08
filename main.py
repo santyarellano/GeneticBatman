@@ -1,21 +1,14 @@
 # main imports
-import groups
-import level_reader
-from player import Player
-from bckg_obj import BackgroundObject
-from floor import Floor
-from typing import Match
 import pygame
 pygame.init()
 
 # custom file imports
-
-# color definitions
-BLACK = (0, 0, 0)
-BLUE = (57, 177, 235)
-BROWN = (194, 130, 52)
-GREEN = (15, 227, 11)
-RED = (189, 9, 42)
+import groups
+import level_reader
+import colors
+from player import Player
+from floor import Floor
+from goal import Goal
 
 
 # constants
@@ -36,13 +29,6 @@ pygame.display.set_caption(TITLE)
 
 clock = pygame.time.Clock()
 
-'''
-sprite_group = pygame.sprite.Group()
-floor_tiles = pygame.sprite.Group()
-top_layer = pygame.sprite.Group()
-player = None
-'''
-
 # load level
 x = 0
 y = 0
@@ -52,13 +38,19 @@ for row in level:
         if cell == 0:
             pass
         elif cell == 1:  # static floor tile
-            tile = Floor(BROWN, TILE_SIZE, TILE_SIZE)
+            tile = Floor(colors.BROWN, TILE_SIZE, TILE_SIZE)
             tile.rect.x = x * TILE_SIZE
             tile.rect.y = y * TILE_SIZE
             groups.sprite_group.add(tile)
             groups.floor_tiles.add(tile)
+        elif cell == 8: # goal
+            goal = Goal(colors.YELLOW, TILE_SIZE, TILE_SIZE)
+            goal.rect.x = x * TILE_SIZE
+            goal.rect.y = y * TILE_SIZE
+            groups.sprite_group.add(goal)
+            groups.top_layer.add(goal)
         elif cell == 9:  # player
-            player = Player(GREEN, TILE_SIZE, GRAVITY)
+            player = Player(colors.GREEN, TILE_SIZE, GRAVITY)
             player.rect.x = x * TILE_SIZE
             player.rect.y = y * TILE_SIZE
             groups.sprite_group.add(player)
@@ -95,7 +87,7 @@ while not quit and player is not None:
             player.releaseRight()
 
     # draw in screen
-    SCR.fill(BLACK)
+    SCR.fill(colors.BLACK)
     # groups.sprite_group.draw(SCR) <- commented this to move to a layered structure
     groups.floor_tiles.draw(SCR)
     groups.top_layer.draw(SCR)
