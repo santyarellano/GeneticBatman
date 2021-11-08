@@ -104,7 +104,7 @@ while not quit:
 
         pygame.display.flip()
 
-        clock.tick(60)
+        clock.tick(settings.FPS)
 
     # genetic algorithm
     if not settings.HUMAN_CONTROL:

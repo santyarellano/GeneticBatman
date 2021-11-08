@@ -61,7 +61,7 @@ class Player(pygame.sprite.Sprite):
     def calculateFitness(self):
         d = helpers.dist(self, settings.goal)
         d *= d
-        self.fitness = 1/d
+        self.fitness = 1/d * 1000
     
     def getChild(self):
         child = Player(colors.GREEN, settings.TILE_SIZE, settings.GRAVITY, True)
