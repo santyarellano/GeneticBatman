@@ -19,6 +19,7 @@ class Player(pygame.sprite.Sprite):
 
         self.left = 0
         self.right = 0
+        self.dir = 0
         self.y_spd = 0
         self.walk_spd = 5
         self.jump_power = 10
@@ -45,10 +46,22 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         self.rect.y += self.y_spd
         self.y_spd += self.gravity
-        self.rect.x += (self.right - self.left) * self.walk_spd
+        
         # check if player is colliding with floor
         hits_floor = pygame.sprite.spritecollideany(self, groups.floor_tiles)
         if hits_floor:
-            self.y_spd = 0
-            self.is_jumping = False
-            self.rect.y = hits_floor.rect.y - self.rect.height + 1
+            # vertical hit
+            if self.rect.y < hits_floor.rect.y:
+                self.y_spd = 0
+                self.is_jumping = False
+                self.rect.y = hits_floor.rect.y - self.rect.height + 1
+            elif self.y_spd < 0:
+                self.y_spd = 0
+            
+            # horizontal hit 
+            #   from left
+            if self.rect.x < hits_floor.rect.x:
+                self.right = 0
+
+        self.dir = (self.right - self.left)
+        self.rect.x += self.dir * self.walk_spd
