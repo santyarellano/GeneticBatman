@@ -58,12 +58,15 @@ class Population:
         
         self.players = new_players
         self.generation += 1
-        print(f'generation: {self.generation} done. fitness: {self.total_fitness}')
+        print(f'generation: {self.generation}. Avg fitness: {self.getAvgFitness()}')
     
     def getTotalFitness(self):
         self.total_fitness = 0
         for p in self.players:
             self.total_fitness += p.fitness
+
+    def getAvgFitness(self):
+        return self.total_fitness / len(self.players)
 
     def getBestN(self):
         # get all fitnesses in a list
@@ -91,9 +94,8 @@ class Population:
 
 
     def chooseParent(self):
-        random.seed()
         r = random.uniform(0.0, self.total_fitness)
-
+        
         pos = 0
         for p in self.players:
             pos += p.fitness
