@@ -13,6 +13,7 @@ class Population:
         self.players = []
         self.generation = 1
         self.total_fitness = 0
+        groups.players_group.empty()
         for i in range(size):
             p = Player(colors.GREEN, settings.TILE_SIZE, settings.GRAVITY, True)
             p.rect.x = settings.PLAYER_SPAWN_X
@@ -72,9 +73,11 @@ class Population:
             topN.append(fitness_list[i])
 
         ret = []
+        to_add = settings.ELITISM_RATIO
         for p in self.players: # get N top players
-            if p.fitness in topN:
+            if p.fitness in topN and to_add > 0:
                 ret.append(p)
+                to_add -= 1
         
         return ret
 

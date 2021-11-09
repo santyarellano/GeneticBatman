@@ -96,7 +96,7 @@ class Player(pygame.sprite.Sprite):
                 self.releaseLeft()
                 self.releaseRight()
                 if self.brain_step >= len(self.brain.instructions):
-                    if not self.reached_goal:
+                    if not self.reached_goal and self.y_spd == 0 and self.dir == 0:
                         self.finished = True
                 else:
                     self.executeNextBrainStep()
