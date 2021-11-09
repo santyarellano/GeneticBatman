@@ -1,0 +1,5 @@
+* weird warning in cuda_example when running
+
+* why the genetic algorithm isn't progressing (or does it so slow and after reaching the goal it gets worse)
+
+* maybe I will need to modify the way instances update?
