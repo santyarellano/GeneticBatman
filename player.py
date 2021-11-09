@@ -1,3 +1,4 @@
+from numpy import true_divide
 import pygame
 import groups
 
@@ -88,6 +89,11 @@ class Player(pygame.sprite.Sprite):
 
         self.brain_step += 1
 
+    def isMoving(self):
+        if self.y_spd != 0 or self.dir != 0 or self.is_jumping:
+            return True
+        return False
+
     def update(self):
         if not self.is_dead and not self.reached_goal and not self.finished:
             # act according to brain if necessary
@@ -96,7 +102,7 @@ class Player(pygame.sprite.Sprite):
                 self.releaseLeft()
                 self.releaseRight()
                 if self.brain_step >= len(self.brain.instructions):
-                    if not self.reached_goal and self.y_spd == 0 and self.dir == 0:
+                    if not self.reached_goal and not self.isMoving():
                         self.finished = True
                 else:
                     self.executeNextBrainStep()
