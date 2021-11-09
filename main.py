@@ -89,6 +89,10 @@ while not quit:
             player.pressRight()
         else:
             player.releaseRight()
+    elif population.generation < settings.GENERATIONS_WITHOUT_RENDER:
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_RETURN]:
+            settings.GENERATIONS_WITHOUT_RENDER = 0
 
     # draw in screen
     if settings.HUMAN_CONTROL or (population.generation > settings.GENERATIONS_WITHOUT_RENDER):
