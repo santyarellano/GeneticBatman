@@ -65,8 +65,10 @@ class Player(pygame.sprite.Sprite):
             self.fitness = 0
         else:
             d = helpers.dist(self, settings.goal)
-            d *= d
-            self.fitness = 1/d * 1000
+            d *= d * d
+            self.fitness = 1/d
+            if self.reached_goal:
+                self.fitness += 1/(self.brain_step * self.brain_step)
     
     def getChild(self):
         child = Player(colors.GREEN, settings.TILE_SIZE, settings.GRAVITY, True)
