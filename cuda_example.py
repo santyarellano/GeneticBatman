@@ -22,7 +22,8 @@ def randomize_matrix(matrix):
         matrix[pos] *= 2 # do the computation
 
 # Create the data array - usually initialized some other way
-data = numpy.ones(1000000)
+data = numpy.ones(10000)
+device_data = cuda.to_device(data)
 
 # Set the number of threads in a block
 threadsperblock = 32 
@@ -33,7 +34,7 @@ blockspergrid = (data.size + (threadsperblock - 1)) // threadsperblock
 #------------- ONE THREAD ------------
 start_time = time.time()
 # Now start the kernel
-randomize_matrix[1, 1](data)
+randomize_matrix[1, 1](device_data)
 
 # Print the result
 print(data)
@@ -42,7 +43,7 @@ print(f'it took {time.time() - start_time} seconds')
 #------------- MULTIPLE THREADS ------------
 start_time = time.time()
 # Now start the kernel
-randomize_matrix[blockspergrid, threadsperblock](data)
+randomize_matrix[len(data), 1](device_data)
 
 # Print the result
 print(data)
