@@ -25,6 +25,17 @@ class Brain:
 
     def clone(self):
         return copy.deepcopy(self)
+
+    def crossover(self, other):
+        new_brain = Brain()
+        cross_point = random.randint(0, len(self.instructions))
+        for i in range(len(self.instructions)):
+            if i < cross_point:
+                new_brain.instructions[i] = self.instructions[i]
+            else:
+                new_brain.instructions[i] = other.instructions[i]
+        
+        return new_brain
     
     def mutate(self):
         new_instructions = []

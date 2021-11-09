@@ -39,12 +39,16 @@ class Population:
 
         for i in range(self.size - settings.ELITISM_RATIO):
             # choose parent based on fitness
-            parent = self.chooseParent()
+            parent1 = self.chooseParent()
+            parent2 = self.chooseParent()
 
             # get child
-            child = parent.getChild()
+            child = self.getChildFromParents(parent1, parent2)
             groups.players_group.add(child)
             new_players.append(child)
+        
+        # mutate this new players
+        self.mutateChildren(new_players)
 
         # keep best players from previous generation
         top_players = self.getBestN()
@@ -72,7 +76,6 @@ class Population:
         for i in range(settings.ELITISM_RATIO):
             topN.append(fitness_list[i])
 
-        print(topN)
         ret = []
         to_add = settings.ELITISM_RATIO
         for p in self.players: # get N top players
@@ -96,9 +99,18 @@ class Population:
             pos += p.fitness
             if pos > r:
                 return p
+    
+    def getChildFromParents(self, par1, par2):
+        child = Player(colors.GREEN, settings.TILE_SIZE, settings.GRAVITY, True)
+        child.rect.x = settings.PLAYER_SPAWN_X
+        child.rect.y = settings.PLAYER_SPAWN_Y
+        child.brain = par1.brain.crossover(par2.brain)
+
+        #child.brain = self.brain.clone()
+        return child
         
-    def mutateChildren(self):
-        for p in self.players:
+    def mutateChildren(self, players):
+        for p in players:
             old = copy.copy(p.brain.instructions)
             p.brain.mutate()
             if old == p.brain.instructions:

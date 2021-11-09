@@ -112,6 +112,5 @@ while not quit:
         if population.allFinished():
             population.calculateFitness()
             population.naturalSelection()
-            population.mutateChildren()
 
 pygame.quit()
