@@ -115,6 +115,7 @@ while not quit:
     if not settings.HUMAN_CONTROL:
         if population.allFinished():
             population.calculateFitness()
+            population.setBestPosition()
             population.naturalSelection()
 
 pygame.quit()

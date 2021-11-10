@@ -32,6 +32,20 @@ class Population:
                 return False
         return True
 
+    def setBestPosition(self):
+        # get all fitnesses in a list
+        fitness_list = []
+        for p in self.players:
+            fitness_list.append(p.fitness)
+        
+        fitness_list.sort(reverse=True)
+        best_fitness = fitness_list[0]
+        for p in self.players:
+            if p.fitness == best_fitness:
+                settings.BEST_X = p.rect.x
+                settings.BEST_Y = p.rect.y
+                break
+
     def naturalSelection(self):
         new_players = []
         groups.players_group.empty()
@@ -58,7 +72,7 @@ class Population:
         
         self.players = new_players
         self.generation += 1
-        print(f'generation: {self.generation}. Avg fitness: {self.getAvgFitness()}')
+        print(f'generation: {self.generation}.\tAvg fitness: {self.getAvgFitness()}.\tBest: ({settings.BEST_X}, {settings.BEST_Y})')
     
     def getTotalFitness(self):
         self.total_fitness = 0
@@ -91,7 +105,6 @@ class Population:
                 to_add -= 1
         
         return ret
-
 
     def chooseParent(self):
         r = random.uniform(0.0, self.total_fitness)

@@ -67,10 +67,9 @@ class Player(pygame.sprite.Sprite):
             else:
                 d = helpers.dist(self, settings.goal)
                 d *= d * d
-                self.fitness = 1/d
+                self.fitness = 1000/d
                 if self.reached_goal:
-                    self.fitness += 100 / \
-                        (self.brain_step * self.brain_step * self.brain_step)
+                    self.fitness += 100 / (self.brain_step * self.brain_step * self.brain_step)
         else:
             pass
 
