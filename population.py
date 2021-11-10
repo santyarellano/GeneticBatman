@@ -53,6 +53,7 @@ class Population:
                 settings.BEST_X = p.rect.x
                 settings.BEST_Y = p.rect.y
                 settings.BEST_FITNESS = p.fitness
+                settings.BEST_DIST = p.dist_to_goal
                 break
 
     def naturalSelection(self):
@@ -81,7 +82,7 @@ class Population:
         
         self.players = new_players
         self.generation += 1
-        print(f'generation: {self.generation}.\tAvg fitness: {self.getAvgFitness()}.\tBest: ({settings.BEST_X}, {settings.BEST_Y}).\tOptimizing: {settings.OPTIMIZATION_FITNESS}')
+        print(f'generation: {self.generation}.\tAvg fitness: {self.getAvgFitness()}.\tBest: {settings.BEST_DIST}.\tOptimizing: {settings.OPTIMIZATION_FITNESS}')
     
     def getTotalFitness(self):
         self.total_fitness = 0

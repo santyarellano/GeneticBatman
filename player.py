@@ -35,6 +35,7 @@ class Player(pygame.sprite.Sprite):
         self.is_dead = False
         self.reached_goal = False
         self.finished = False
+        self.dist_to_goal = 0
         self.run_optimization_fitness = optimization_fitness
 
         self.fitness = 0
@@ -59,21 +60,25 @@ class Player(pygame.sprite.Sprite):
 
     def releaseRight(self):
         self.right = 0
+    
+    def distWithGoal(self):
+        self.dist_to_goal = helpers.dist(self, settings.goal)
 
     def calculateFitness(self):
+        self.distWithGoal()
         if not self.reached_goal:
             if not self.run_optimization_fitness:
                 if self.is_dead:
                     self.fitness = 0
                 else:
-                    d = helpers.dist(self, settings.goal)
+                    d = self.dist_to_goal
                     d *= d * d
                     self.fitness = 1000/d
             else:
                 if self.is_dead:
                     self.fitness = 0
                 else:
-                    d = helpers.dist(self, settings.goal)
+                    d = self.dist_to_goal
                     d *= d * d
                     self.fitness = 1000/d
         else:

@@ -22,6 +22,7 @@ PLAYER_SPAWN_Y = 0
 
 BEST_X = 0
 BEST_Y = 0
+BEST_DIST = 0
 BEST_FITNESS = 0
 
 # data globals
