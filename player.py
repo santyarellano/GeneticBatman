@@ -1,20 +1,23 @@
-import pygame
 import groups
 
+from game_object import GameObject
 import settings
 import helpers
 import colors
+from rect import Rect
 from brain import Options
 from brain import Brain
 
 BLACK = (0, 0, 0)
 
 
-class Player(pygame.sprite.Sprite):
+class Player(GameObject):
 
-    def __init__(self, color, size, gravity, is_ai, optimization_fitness):
+    def __init__(self, color, gravity, is_ai, optimization_fitness, rect):
         super().__init__()
 
+        # should move this to other place
+        '''
         self.image = pygame.Surface([size, size])
         self.image.fill(BLACK)
         self.image.set_colorkey(BLACK)
@@ -22,6 +25,9 @@ class Player(pygame.sprite.Sprite):
         pygame.draw.rect(self.image, color, [0, 0, size, size])
 
         self.rect = self.image.get_rect()
+        '''
+
+        self.rect = rect
 
         self.left = 0
         self.right = 0
@@ -85,10 +91,8 @@ class Player(pygame.sprite.Sprite):
             self.fitness = 10000 / (self.brain_step * self.brain_step * self.brain_step)
 
     def getChild(self):
-        child = Player(colors.GREEN, settings.TILE_SIZE,
-                       settings.GRAVITY, True)
-        child.rect.x = settings.PLAYER_SPAWN_X
-        child.rect.y = settings.PLAYER_SPAWN_Y
+        rec = Rect(settings.PLAYER_SPAWN_X, settings.PLAYER_SPAWN_Y, settings.TILE_SIZE, settings.TILE_SIZE)
+        child = Player(colors.GREEN, settings.GRAVITY, True, settings.OPTIMIZATION_FITNESS, rec)
         child.brain = self.brain.clone()
         return child
 
@@ -128,27 +132,27 @@ class Player(pygame.sprite.Sprite):
 
             # check if player is colliding with floor
             for tile in groups.floor_tiles:
-                if pygame.sprite.collide_rect(self, tile):
+                if helpers.rectsColliding(self.rect, tile.rect):
                     # check vertical collision
-                    if self.rect.centery < tile.rect.y:  # from top
+                    if self.rect.getCenterY() < tile.rect.y:  # from top
                         self.y_spd = 0
                         self.rect.y = tile.rect.y - self.rect.height + 1
                         self.is_jumping = False
                     # from bottom
-                    elif self.rect.centery > (tile.rect.y + tile.rect.height):
+                    elif self.rect.getCenterY() > (tile.rect.y + tile.rect.height):
                         self.y_spd = 0
                         self.rect.y = tile.rect.y + tile.rect.height
 
                     # check horizontal collision
                     #   should be within same vertical space
-                    if self.rect.centery >= (tile.rect.centery - tile.rect.height/3):
-                        if self.rect.centery <= (tile.rect.centery + tile.rect.height/3):
+                    if self.rect.getCenterY() >= (tile.rect.getCenterY() - tile.rect.height/3):
+                        if self.rect.getCenterY() <= (tile.rect.getCenterY() + tile.rect.height/3):
                             # now we can check the horizontal collision
-                            if self.rect.centerx < tile.rect.x:  # from left
+                            if self.rect.getCenterX() < tile.rect.x:  # from left
                                 self.right = 0
                                 self.rect.x = tile.rect.x - self.rect.width
                             # from right
-                            elif self.rect.centerx > (tile.rect.x + tile.rect.width):
+                            elif self.rect.getCenterX() > (tile.rect.x + tile.rect.width):
                                 self.left = 0
                                 self.rect.x = tile.rect.x + tile.rect.width
 

@@ -9,6 +9,7 @@ from pygame import math
 import colors
 import settings
 import groups
+from rect import Rect
 from player import Player
 
 def update_players(players):
@@ -25,9 +26,8 @@ class Population:
         self.gens_till_swap = settings.SWAP_FITNESS
         groups.players_group.empty()
         for i in range(size):
-            p = Player(colors.GREEN, settings.TILE_SIZE, settings.GRAVITY, True, settings.OPTIMIZATION_FITNESS)
-            p.rect.x = settings.PLAYER_SPAWN_X
-            p.rect.y = settings.PLAYER_SPAWN_Y
+            rec = Rect(settings.PLAYER_SPAWN_X, settings.PLAYER_SPAWN_Y, settings.TILE_SIZE, settings.TILE_SIZE)
+            p = Player(colors.GREEN, settings.GRAVITY, True, settings.OPTIMIZATION_FITNESS, rec)
             groups.players_group.add(p)
 
             self.players.append(p)
@@ -138,10 +138,9 @@ class Population:
         to_add = settings.ELITISM_RATIO
         for p in self.players: # get N top players
             if p.fitness in topN and to_add > 0:
-                new_p = Player(colors.RED, settings.TILE_SIZE, settings.GRAVITY, True, settings.OPTIMIZATION_FITNESS)
+                rec = Rect(settings.PLAYER_SPAWN_X, settings.PLAYER_SPAWN_Y, settings.TILE_SIZE, settings.TILE_SIZE)
+                new_p = Player(colors.RED, settings.GRAVITY, True, settings.OPTIMIZATION_FITNESS, rec)
                 new_p.brain = p.brain.clone()
-                new_p.rect.x = settings.PLAYER_SPAWN_X
-                new_p.rect.y = settings.PLAYER_SPAWN_Y
                 ret.append(new_p)
                 to_add -= 1
         
@@ -157,9 +156,8 @@ class Population:
                 return p
     
     def getChildFromParents(self, par1, par2):
-        child = Player(colors.GREEN, settings.TILE_SIZE, settings.GRAVITY, True, settings.OPTIMIZATION_FITNESS)
-        child.rect.x = settings.PLAYER_SPAWN_X
-        child.rect.y = settings.PLAYER_SPAWN_Y
+        rec = Rect(settings.PLAYER_SPAWN_X, settings.PLAYER_SPAWN_Y, settings.TILE_SIZE, settings.TILE_SIZE)
+        child = Player(colors.GREEN, settings.GRAVITY, True, settings.OPTIMIZATION_FITNESS, rec)
         child.brain = par1.brain.crossover(par2.brain)
 
         #child.brain = self.brain.clone()
