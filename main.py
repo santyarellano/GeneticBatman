@@ -1,5 +1,6 @@
 # main imports
 import pygame
+import time
 pygame.init()
 
 # custom file imports
@@ -28,6 +29,7 @@ if __name__ == '__main__':
     pygame.display.set_caption(settings.TITLE)
 
     clock = pygame.time.Clock()
+    start = time.time()
 
     # load level
     x = 0
@@ -116,6 +118,9 @@ if __name__ == '__main__':
         # genetic algorithm
         if not settings.HUMAN_CONTROL:
             if population.allFinished():
+                if population.generation == settings.TIME_N_GENS:
+                    print_time = time.time() - start
+                    print(f'{settings.TIME_N_GENS} generations took: {print_time} secs.')
                 population.tickSwap()
                 population.calculateFitness()
                 if not settings.OPTIMIZATION_FITNESS:

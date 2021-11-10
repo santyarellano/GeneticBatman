@@ -2,11 +2,18 @@ import random
 import copy
 import multiprocessing as mp
 import time
+import numpy as np
+
+from pygame import math
 
 import colors
 import settings
 import groups
 from player import Player
+
+def update_players(players):
+        for p in players:
+            p.update()
 
 class Population:
 
@@ -24,10 +31,27 @@ class Population:
             groups.players_group.add(p)
 
             self.players.append(p)
-    
+
     def update(self): # this should work with multiprocessing
+        # divide players for processes
+        p_size = len(self.players)
+        splits = np.array_split(self.players, settings.PROCESSES)
+
+        # create processes
+        processes = []
+        for i in range(settings.PROCESSES):
+            p = mp.Process(target=update_players, args=(splits[i],))
+            processes.append(p)
+            processes[i].start()
+        
+        # join processes (wait for 'em to finish)
+        for p in processes:
+            p.join()
+
+        '''
         for p in self.players:
             p.update()
+        '''
     
     def tickSwap(self):
         self.gens_till_swap -= 1
@@ -88,7 +112,8 @@ class Population:
         
         self.players = new_players
         self.generation += 1
-        print(f'generation: {self.generation}.\tAvg fitness: {self.getAvgFitness()}.\tBest: {settings.BEST_DIST}.\tOptimizing: {settings.OPTIMIZATION_FITNESS}')
+        if settings.PRINT_DEBUG:
+            print(f'generation: {self.generation}.\tAvg fitness: {self.getAvgFitness()}.\tBest: {settings.BEST_DIST}.\tOptimizing: {settings.OPTIMIZATION_FITNESS}')
     
     def getTotalFitness(self):
         self.total_fitness = 0
