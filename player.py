@@ -35,6 +35,7 @@ class Player(pygame.sprite.Sprite):
         self.is_dead = False
         self.reached_goal = False
         self.finished = False
+        self.run_optimization_fitness = False
 
         self.fitness = 0
 
@@ -60,15 +61,18 @@ class Player(pygame.sprite.Sprite):
         self.right = 0
 
     def calculateFitness(self):
-        if self.is_dead:
-            self.fitness = 0
+        if not self.run_optimization_fitness:
+            if self.is_dead:
+                self.fitness = 0
+            else:
+                d = helpers.dist(self, settings.goal)
+                d *= d * d
+                self.fitness = 1/d
+                if self.reached_goal:
+                    self.fitness += 100 / \
+                        (self.brain_step * self.brain_step * self.brain_step)
         else:
-            d = helpers.dist(self, settings.goal)
-            d *= d * d
-            self.fitness = 1/d
-            if self.reached_goal:
-                self.fitness += 100 / \
-                    (self.brain_step * self.brain_step * self.brain_step)
+            pass
 
     def getChild(self):
         child = Player(colors.GREEN, settings.TILE_SIZE,
