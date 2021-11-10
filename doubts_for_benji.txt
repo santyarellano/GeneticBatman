@@ -1,8 +1,0 @@
-* weird warning in cuda_example when running
-
-* should I do this project in cuda or in the cpu with concurrency?
-
-* why the genetic algorithm isn't progressing (or does it so slow and after reaching the goal it gets worse)
-
-* maybe I will need to modify the way instances update?
-

@@ -12,7 +12,7 @@ BLACK = (0, 0, 0)
 
 class Player(pygame.sprite.Sprite):
 
-    def __init__(self, color, size, gravity, is_ai):
+    def __init__(self, color, size, gravity, is_ai, optimization_fitness):
         super().__init__()
 
         self.image = pygame.Surface([size, size])
@@ -35,7 +35,7 @@ class Player(pygame.sprite.Sprite):
         self.is_dead = False
         self.reached_goal = False
         self.finished = False
-        self.run_optimization_fitness = False
+        self.run_optimization_fitness = optimization_fitness
 
         self.fitness = 0
 
@@ -61,17 +61,23 @@ class Player(pygame.sprite.Sprite):
         self.right = 0
 
     def calculateFitness(self):
-        if not self.run_optimization_fitness:
-            if self.is_dead:
-                self.fitness = 0
+        if not self.reached_goal:
+            if not self.run_optimization_fitness:
+                if self.is_dead:
+                    self.fitness = 0
+                else:
+                    d = helpers.dist(self, settings.goal)
+                    d *= d * d
+                    self.fitness = 1000/d
             else:
-                d = helpers.dist(self, settings.goal)
-                d *= d * d
-                self.fitness = 1000/d
-                if self.reached_goal:
-                    self.fitness += 100 / (self.brain_step * self.brain_step * self.brain_step)
+                if self.is_dead:
+                    self.fitness = 0
+                else:
+                    d = helpers.dist(self, settings.goal)
+                    d *= d * d
+                    self.fitness = 1000/d
         else:
-            pass
+            self.fitness = 10000 / (self.brain_step * self.brain_step * self.brain_step)
 
     def getChild(self):
         child = Player(colors.GREEN, settings.TILE_SIZE,
@@ -151,6 +157,14 @@ class Player(pygame.sprite.Sprite):
             if self.rect.y > settings.SCR_H or (self.rect.y + self.rect.height) < 0:
                 self.is_dead = True
                 self.finished = True
+
+            # if optimizing, check if should stop
+            if settings.OPTIMIZATION_FITNESS:
+                self_dist = helpers.dist_modular(self.rect.x, settings.goal.rect.x, self.rect.y, settings.goal.rect.y)
+                best_dist = helpers.dist_modular(settings.BEST_X, settings.goal.rect.x, settings.BEST_Y, settings.goal.rect.y)
+                if self_dist < best_dist:
+                    self.finished = True
+                    self.reached_goal = True
 
             # check if reached goal
             if pygame.sprite.collide_rect(self, settings.goal):

@@ -114,8 +114,9 @@ while not quit:
     # genetic algorithm
     if not settings.HUMAN_CONTROL:
         if population.allFinished():
+            population.tickSwap()
             population.calculateFitness()
-            population.setBestPosition()
+            population.setBestInstance()
             population.naturalSelection()
 
 pygame.quit()

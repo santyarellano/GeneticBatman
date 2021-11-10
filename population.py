@@ -13,14 +13,22 @@ class Population:
         self.players = []
         self.generation = 1
         self.total_fitness = 0
+        self.gens_till_swap = settings.SWAP_FITNESS
         groups.players_group.empty()
         for i in range(size):
-            p = Player(colors.GREEN, settings.TILE_SIZE, settings.GRAVITY, True)
+            p = Player(colors.GREEN, settings.TILE_SIZE, settings.GRAVITY, True, settings.OPTIMIZATION_FITNESS)
             p.rect.x = settings.PLAYER_SPAWN_X
             p.rect.y = settings.PLAYER_SPAWN_Y
             groups.players_group.add(p)
 
             self.players.append(p)
+    
+    def tickSwap(self):
+        self.gens_till_swap -= 1
+        if self.gens_till_swap == 0:
+            settings.OPTIMIZATION_FITNESS = not settings.OPTIMIZATION_FITNESS
+            self.gens_till_swap = settings.SWAP_FITNESS
+
         
     def calculateFitness(self):
         for p in self.players:
@@ -32,7 +40,7 @@ class Population:
                 return False
         return True
 
-    def setBestPosition(self):
+    def setBestInstance(self):
         # get all fitnesses in a list
         fitness_list = []
         for p in self.players:
@@ -44,6 +52,7 @@ class Population:
             if p.fitness == best_fitness:
                 settings.BEST_X = p.rect.x
                 settings.BEST_Y = p.rect.y
+                settings.BEST_FITNESS = p.fitness
                 break
 
     def naturalSelection(self):
@@ -72,7 +81,7 @@ class Population:
         
         self.players = new_players
         self.generation += 1
-        print(f'generation: {self.generation}.\tAvg fitness: {self.getAvgFitness()}.\tBest: ({settings.BEST_X}, {settings.BEST_Y})')
+        print(f'generation: {self.generation}.\tAvg fitness: {self.getAvgFitness()}.\tBest: ({settings.BEST_X}, {settings.BEST_Y}).\tOptimizing: {settings.OPTIMIZATION_FITNESS}')
     
     def getTotalFitness(self):
         self.total_fitness = 0
@@ -97,7 +106,7 @@ class Population:
         to_add = settings.ELITISM_RATIO
         for p in self.players: # get N top players
             if p.fitness in topN and to_add > 0:
-                new_p = Player(colors.RED, settings.TILE_SIZE, settings.GRAVITY, True)
+                new_p = Player(colors.RED, settings.TILE_SIZE, settings.GRAVITY, True, settings.OPTIMIZATION_FITNESS)
                 new_p.brain = p.brain.clone()
                 new_p.rect.x = settings.PLAYER_SPAWN_X
                 new_p.rect.y = settings.PLAYER_SPAWN_Y
@@ -116,7 +125,7 @@ class Population:
                 return p
     
     def getChildFromParents(self, par1, par2):
-        child = Player(colors.GREEN, settings.TILE_SIZE, settings.GRAVITY, True)
+        child = Player(colors.GREEN, settings.TILE_SIZE, settings.GRAVITY, True, settings.OPTIMIZATION_FITNESS)
         child.rect.x = settings.PLAYER_SPAWN_X
         child.rect.y = settings.PLAYER_SPAWN_Y
         child.brain = par1.brain.crossover(par2.brain)
