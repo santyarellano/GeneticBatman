@@ -1,5 +1,7 @@
 import random
 import copy
+import multiprocessing as mp
+import time
 
 import colors
 import settings
@@ -22,6 +24,10 @@ class Population:
             groups.players_group.add(p)
 
             self.players.append(p)
+    
+    def update(self): # this should work with multiprocessing
+        for p in self.players:
+            p.update()
     
     def tickSwap(self):
         self.gens_till_swap -= 1
