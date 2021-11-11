@@ -9,6 +9,7 @@ import colors
 import settings
 import groups
 import renderer
+from rect import Rect
 from player import Player
 from floor import Floor
 from goal import Goal
@@ -56,7 +57,8 @@ if __name__ == '__main__':
                 settings.PLAYER_SPAWN_Y = y * settings.TILE_SIZE
 
                 if settings.HUMAN_CONTROL:
-                    player = Player(colors.GREEN, settings.TILE_SIZE, settings.GRAVITY, False)
+                    rec = Rect(settings.PLAYER_SPAWN_X, settings.PLAYER_SPAWN_Y, settings.TILE_SIZE, settings.TILE_SIZE)
+                    player = Player(colors.GREEN, settings.GRAVITY, False, False, rec)
                     player.rect.x = settings.PLAYER_SPAWN_X
                     player.rect.y = settings.PLAYER_SPAWN_Y
                     groups.players_group.append(player)
@@ -77,7 +79,10 @@ if __name__ == '__main__':
                 quit = True
 
         #groups.players_group.update()
-        population.update()
+        if settings.HUMAN_CONTROL:
+            groups.players_group[0].update()
+        else:
+            population.update()
 
         # Key events (ONLY ALLOWED WHEN A HUMAN IS PLAYING)
         if settings.HUMAN_CONTROL:
