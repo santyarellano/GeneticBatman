@@ -1,6 +1,7 @@
 import random
 import copy
 import multiprocessing as mp
+import concurrent.futures
 import time
 import numpy as np
 
@@ -10,10 +11,9 @@ import settings
 from rect import Rect
 from player import Player
 
-def update_players(players, ret_queue):
-        for p in players:
-            p.update()
-            ret_queue.put(players)
+def update_players(players):
+        for i in range(len(players)):
+            players[i].update()
 
 class Population:
 
@@ -29,15 +29,14 @@ class Population:
             groups.players_group.append(p)
 
     def update(self): # this should work with multiprocessing
-        if settings.CONCURRENT:
+        if settings.CONCURRENT: # still not working
             # divide players for processes
             splits = np.array_split(groups.players_group, settings.PROCESSES)
 
             # create processes
             processes = []
-            ret_queue = mp.Queue()
             for players in splits:
-                p = mp.Process(target=update_players, args=(players, ret_queue))
+                p = mp.Process(target=update_players, args=(players,))
                 processes.append(p)
 
             # start processes

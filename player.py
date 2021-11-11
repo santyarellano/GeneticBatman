@@ -15,17 +15,6 @@ class Player(GameObject):
     def __init__(self, color, gravity, is_ai, optimization_fitness, rect):
         super().__init__()
 
-        # should move this to other place
-        '''
-        self.image = pygame.Surface([size, size])
-        self.image.fill(BLACK)
-        self.image.set_colorkey(BLACK)
-
-        pygame.draw.rect(self.image, color, [0, 0, size, size])
-
-        self.rect = self.image.get_rect()
-        '''
-
         self.rect = rect
 
         self.left = 0
