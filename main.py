@@ -8,6 +8,7 @@ import level_reader
 import colors
 import settings
 import groups
+import renderer
 from player import Player
 from floor import Floor
 from goal import Goal
@@ -20,7 +21,7 @@ if __name__ == '__main__':
     settings.SCR_W = len(level[0]) * settings.TILE_SIZE
     settings.SCR_H = len(level) * settings.TILE_SIZE
     SCR_DIMENSIONS = (settings.SCR_W, settings.SCR_H)
-    SCR = pygame.display.set_mode(SCR_DIMENSIONS)
+    settings.SCR = pygame.display.set_mode(SCR_DIMENSIONS)
     pygame.font.init()
     font = pygame.font.SysFont('Comic Sans MS', 30)
 
@@ -100,16 +101,19 @@ if __name__ == '__main__':
 
         # draw in screen
         if settings.HUMAN_CONTROL or (population.generation > settings.GENERATIONS_WITHOUT_RENDER):
-            SCR.fill(colors.BLACK)
-            groups.floor_tiles.draw(SCR)
-            groups.top_layer.draw(SCR)
-            groups.players_group.draw(SCR)
+            settings.SCR.fill(colors.BLACK)
+            '''
+            groups.floor_tiles.draw(settings.SCR)
+            groups.top_layer.draw(settings.SCR)
+            groups.players_group.draw(settings.SCR)
+            '''
+            renderer.drawByLayers()
 
             # show generation
             if not settings.HUMAN_CONTROL:
                 txt = f'Generation: {population.generation}. Population: {len(population.players)}'
                 text_renderer = font.render(txt, False, colors.WHITE)
-                SCR.blit(text_renderer, (20,20))
+                settings.SCR.blit(text_renderer, (20,20))
 
             pygame.display.flip()
 

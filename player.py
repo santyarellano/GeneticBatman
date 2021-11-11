@@ -35,6 +35,7 @@ class Player(GameObject):
         self.walk_spd = 5
         self.jump_power = 10
         self.gravity = gravity
+        self.color = color
         self.is_jumping = False
         self.is_ai = is_ai
         self.is_dead = False
@@ -175,6 +176,6 @@ class Player(GameObject):
                     self.reached_goal = True
 
             # check if reached goal
-            if pygame.sprite.collide_rect(self, settings.goal):
+            if helpers.objectsColliding(self, settings.goal):
                 self.reached_goal = True
                 self.finished = True

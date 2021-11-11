@@ -1,6 +1,7 @@
 TITLE = "Genetic Level Checker"
 SCR_W = 0
 SCR_H = 0
+SCR = None
 FPS = 60
 PROCESSES = 7
 PRINT_DEBUG = False

@@ -87,7 +87,6 @@ class Population:
 
     def naturalSelection(self):
         new_players = []
-        groups.players_group.empty()
         self.getTotalFitness()
 
         for i in range(self.size - settings.ELITISM_RATIO):
@@ -109,6 +108,7 @@ class Population:
             new_players.append(p)
             groups.players_group.add(p)
         
+        #groups.players_group.clear()
         self.players = new_players
         self.generation += 1
         if settings.PRINT_DEBUG:
@@ -154,7 +154,7 @@ class Population:
             if pos > r:
                 return p
     
-    def getChildFromParents(self, par1, par2):
+    def getChildFromParents(self, par1: Player, par2: Player):
         rec = Rect(settings.PLAYER_SPAWN_X, settings.PLAYER_SPAWN_Y, settings.TILE_SIZE, settings.TILE_SIZE)
         child = Player(colors.GREEN, settings.GRAVITY, True, settings.OPTIMIZATION_FITNESS, rec)
         child.brain = par1.brain.crossover(par2.brain)

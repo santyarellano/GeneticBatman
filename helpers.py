@@ -1,3 +1,4 @@
+from game_object import GameObject
 from rect import Rect
 import math
 
@@ -11,6 +12,9 @@ def dist_modular(x1, x2, y1, y2):
     deltaY = y1 - y2
     return math.hypot(deltaX, deltaY)
 
+def objectsColliding(obj1: GameObject, obj2: GameObject):
+    return rectsColliding(obj1.rect, obj2.rect)
+
 def rectsColliding(rec1: Rect, rec2: Rect):
     if (rec1.getTopLeft()[0] == rec1.getBottomRight()[0] 
         or rec1.getTopLeft()[1] == rec1.getBottomRight()[1] 
@@ -21,12 +25,13 @@ def rectsColliding(rec1: Rect, rec2: Rect):
        
      
     # If one rectangle is on left side of other
-    if(rec1.getTopLeft().x >= rec2.getBottomRight().x 
-        or rec2.getTopLeft().x >= rec1.getBottomRight().x):
+    if(rec1.getTopLeft()[0] >= rec2.getBottomRight()[0] 
+        or rec2.getTopLeft()[0] >= rec1.getBottomRight()[0]):
         return False
  
     # If one rectangle is above other
-    if(rec1.getBottomRight().y >= rec2.getTopLeft().y or rec2.getBottomRight().y >= rec1.getTopLeft().y):
+    if(rec1.getBottomRight()[1] >= rec2.getTopLeft()[1] 
+        or rec2.getBottomRight()[1] >= rec1.getTopLeft()[1]):
         return False
  
     return True
