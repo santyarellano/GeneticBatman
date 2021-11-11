@@ -4,8 +4,8 @@ SCR_H = 0
 SCR = None
 FPS = 60
 CONCURRENT = True
-PROCESSES = 7
-PRINT_DEBUG = True
+PROCESSES = 1
+PRINT_DEBUG = False
 
 GRAVITY = 0.5
 HUMAN_CONTROL = False
@@ -32,3 +32,5 @@ BEST_FITNESS = 0
 
 # data globals
 goal = None
+floor_tiles = 0
+goals = 0

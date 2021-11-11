@@ -46,12 +46,14 @@ if __name__ == '__main__':
                 tile.rect.x = x * settings.TILE_SIZE
                 tile.rect.y = y * settings.TILE_SIZE
                 groups.floor_tiles.append(tile)
+                settings.floor_tiles += 1
             elif cell == 8: # goal
                 goal = Goal(colors.YELLOW, settings.TILE_SIZE, settings.TILE_SIZE)
                 goal.rect.x = x * settings.TILE_SIZE
                 goal.rect.y = y * settings.TILE_SIZE
                 groups.top_layer.append(goal)
                 settings.goal = goal
+                settings.goals += 1
             elif cell == 9:  # player
                 settings.PLAYER_SPAWN_X = x * settings.TILE_SIZE
                 settings.PLAYER_SPAWN_Y = y * settings.TILE_SIZE

@@ -3,7 +3,6 @@ import copy
 import multiprocessing as mp
 import time
 import numpy as np
-#from pygame import math
 
 import colors
 import groups
@@ -55,7 +54,6 @@ class Population:
             settings.OPTIMIZATION_FITNESS = not settings.OPTIMIZATION_FITNESS
             self.gens_till_swap = settings.SWAP_FITNESS
 
-        
     def calculateFitness(self):
         for p in groups.players_group:
             p.calculateFitness()
