@@ -153,13 +153,11 @@ class Population:
             if pos > r:
                 return p
 
-        print(f"-------------- SUPER WEIRD -------------")
+        print(f"Choose parent got to a really weird point")
     
     def getChildFromParents(self, par1: Player, par2: Player):
         rec = Rect(settings.PLAYER_SPAWN_X, settings.PLAYER_SPAWN_Y, settings.TILE_SIZE, settings.TILE_SIZE)
         child = Player(colors.GREEN, settings.GRAVITY, True, settings.OPTIMIZATION_FITNESS, rec)
-        if par1 == None:
-            print("---------------- weird ----------------------")
         child.brain = par1.brain.crossover(par2.brain)
 
         #child.brain = self.brain.clone()
