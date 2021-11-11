@@ -17,8 +17,11 @@ def drawPlayers():
     for player in groups.players_group:
         pygame.draw.rect(settings.SCR, player.color, (player.rect.x, player.rect.y, player.rect.width, player.rect.height))
 
-def drawByLayers():
+def blackScreen():
     settings.SCR.fill(colors.BLACK)
+
+def drawByLayers():
+    blackScreen()
     drawFloors()
     drawTopLayer()
     drawPlayers()

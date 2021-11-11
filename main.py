@@ -85,8 +85,11 @@ if __name__ == '__main__':
             population.update()
 
         # Key events (ONLY ALLOWED WHEN A HUMAN IS PLAYING)
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_ESCAPE]:
+            quit = True
+
         if settings.HUMAN_CONTROL:
-            keys = pygame.key.get_pressed()
             if keys[pygame.K_SPACE]:
                 player.jump()
 
@@ -99,10 +102,12 @@ if __name__ == '__main__':
                 player.pressRight()
             else:
                 player.releaseRight()
-        elif population.generation < settings.GENERATIONS_WITHOUT_RENDER:
-            keys = pygame.key.get_pressed()
+        elif not settings.HUMAN_CONTROL:
             if keys[pygame.K_RETURN]:
-                settings.GENERATIONS_WITHOUT_RENDER = 0
+                if settings.GENERATIONS_WITHOUT_RENDER >= 10000:
+                    settings.GENERATIONS_WITHOUT_RENDER = 0
+                else:
+                    settings.GENERATIONS_WITHOUT_RENDER = 10000
 
         # draw in screen
         if settings.HUMAN_CONTROL or (population.generation > settings.GENERATIONS_WITHOUT_RENDER):

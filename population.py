@@ -29,25 +29,24 @@ class Population:
             groups.players_group.append(p)
 
     def update(self): # this should work with multiprocessing
-        # divide players for processes
-        '''
-        p_size = len(self.players)
-        splits = np.array_split(self.players, settings.PROCESSES)
+        if settings.CONCURRENT:
+            # divide players for processes
+            splits = np.array_split(groups.players_group, settings.PROCESSES)
 
-        # create processes
-        processes = []
-        for i in range(settings.PROCESSES):
-            p = mp.Process(target=update_players, args=(splits[i],))
-            processes.append(p)
-            processes[i].start()
+            # create processes
+            processes = []
+            for i in range(settings.PROCESSES):
+                p = mp.Process(target=update_players, args=(splits[i],))
+                processes.append(p)
+                processes[i].start()
+            
+            # join processes (wait for 'em to finish)
+            for p in processes:
+                p.join()
         
-        # join processes (wait for 'em to finish)
-        for p in processes:
-            p.join()
-        '''
-        
-        for p in groups.players_group:
-            p.update()
+        else:
+            for p in groups.players_group:
+                p.update()
         
     
     def tickSwap(self):
@@ -110,7 +109,7 @@ class Population:
         groups.players_group = new_players
         self.generation += 1
         if settings.PRINT_DEBUG:
-            print(f'generation: {self.generation}.\tAvg fitness: {self.getAvgFitness()}.\tBest: {settings.BEST_DIST}.\tOptimizing: {settings.OPTIMIZATION_FITNESS}')
+            print(f'Gen: {self.generation}.\tFitness: {self.getAvgFitness()}.\tBest: {settings.BEST_DIST}.\tOpt: {settings.OPTIMIZATION_FITNESS}')
     
     def getTotalFitness(self):
         self.total_fitness = 0

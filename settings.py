@@ -3,6 +3,7 @@ SCR_W = 0
 SCR_H = 0
 SCR = None
 FPS = 60
+CONCURRENT = True
 PROCESSES = 7
 PRINT_DEBUG = True
 
