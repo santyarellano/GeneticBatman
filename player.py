@@ -1,9 +1,8 @@
-import groups
-
 from game_object import GameObject
 import settings
 import helpers
 import colors
+import groups
 from rect import Rect
 from brain import Options
 from brain import Brain

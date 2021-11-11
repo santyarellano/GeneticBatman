@@ -3,12 +3,11 @@ import copy
 import multiprocessing as mp
 import time
 import numpy as np
-
-from pygame import math
+#from pygame import math
 
 import colors
-import settings
 import groups
+import settings
 from rect import Rect
 from player import Player
 
@@ -24,16 +23,16 @@ class Population:
         self.generation = 1
         self.total_fitness = 0
         self.gens_till_swap = settings.SWAP_FITNESS
-        groups.players_group.empty()
+        groups.players_group.clear()
         for i in range(size):
             rec = Rect(settings.PLAYER_SPAWN_X, settings.PLAYER_SPAWN_Y, settings.TILE_SIZE, settings.TILE_SIZE)
             p = Player(colors.GREEN, settings.GRAVITY, True, settings.OPTIMIZATION_FITNESS, rec)
-            groups.players_group.add(p)
 
             self.players.append(p)
 
     def update(self): # this should work with multiprocessing
         # divide players for processes
+        '''
         p_size = len(self.players)
         splits = np.array_split(self.players, settings.PROCESSES)
 
@@ -47,11 +46,11 @@ class Population:
         # join processes (wait for 'em to finish)
         for p in processes:
             p.join()
-
         '''
+        
         for p in self.players:
             p.update()
-        '''
+        
     
     def tickSwap(self):
         self.gens_till_swap -= 1

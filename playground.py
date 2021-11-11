@@ -1,4 +1,5 @@
 import random
 
-r = random.uniform(0, 2)
-print(r)
+r = (1.1, 2.2)
+
+print(r[0])

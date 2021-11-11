@@ -4,10 +4,10 @@ import time
 pygame.init()
 
 # custom file imports
-import groups
 import level_reader
 import colors
 import settings
+import groups
 from player import Player
 from floor import Floor
 from goal import Goal
@@ -43,12 +43,12 @@ if __name__ == '__main__':
                 tile = Floor(colors.BROWN, settings.TILE_SIZE, settings.TILE_SIZE)
                 tile.rect.x = x * settings.TILE_SIZE
                 tile.rect.y = y * settings.TILE_SIZE
-                groups.floor_tiles.add(tile)
+                groups.floor_tiles.append(tile)
             elif cell == 8: # goal
                 goal = Goal(colors.YELLOW, settings.TILE_SIZE, settings.TILE_SIZE)
                 goal.rect.x = x * settings.TILE_SIZE
                 goal.rect.y = y * settings.TILE_SIZE
-                groups.top_layer.add(goal)
+                groups.top_layer.append(goal)
                 settings.goal = goal
             elif cell == 9:  # player
                 settings.PLAYER_SPAWN_X = x * settings.TILE_SIZE

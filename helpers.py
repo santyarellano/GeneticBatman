@@ -1,4 +1,4 @@
-import pygame
+from rect import Rect
 import math
 
 def dist(spr1, spr2):
@@ -11,14 +11,18 @@ def dist_modular(x1, x2, y1, y2):
     deltaY = y1 - y2
     return math.hypot(deltaX, deltaY)
 
-def rectsColliding(rec1, rec2):
-    if (rec1.getTopLeft().x == rec1.getBottomRight().x or rec1.getTopLeft().y == rec1.getBottomRight().y or rec2.getTopLeft().x == rec2.getBottomRight().x or rec2.getTopLeft().y == rec2.getBottomRight().y):
+def rectsColliding(rec1: Rect, rec2: Rect):
+    if (rec1.getTopLeft()[0] == rec1.getBottomRight()[0] 
+        or rec1.getTopLeft()[1] == rec1.getBottomRight()[1] 
+        or rec2.getTopLeft()[0] == rec2.getBottomRight()[0] 
+        or rec2.getTopLeft()[1] == rec2.getBottomRight()[1]):
         # the line cannot have positive overlap
         return False
        
      
     # If one rectangle is on left side of other
-    if(rec1.getTopLeft().x >= rec2.getBottomRight().x or rec2.getTopLeft().x >= rec1.getBottomRight().x):
+    if(rec1.getTopLeft().x >= rec2.getBottomRight().x 
+        or rec2.getTopLeft().x >= rec1.getBottomRight().x):
         return False
  
     # If one rectangle is above other
