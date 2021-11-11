@@ -59,7 +59,7 @@ if __name__ == '__main__':
                     player = Player(colors.GREEN, settings.TILE_SIZE, settings.GRAVITY, False)
                     player.rect.x = settings.PLAYER_SPAWN_X
                     player.rect.y = settings.PLAYER_SPAWN_Y
-                    groups.players_group.add(player)
+                    groups.players_group.append(player)
                 else:
                     population = Population(settings.POPULATION_SIZE)
                 
@@ -101,17 +101,12 @@ if __name__ == '__main__':
 
         # draw in screen
         if settings.HUMAN_CONTROL or (population.generation > settings.GENERATIONS_WITHOUT_RENDER):
-            settings.SCR.fill(colors.BLACK)
-            '''
-            groups.floor_tiles.draw(settings.SCR)
-            groups.top_layer.draw(settings.SCR)
-            groups.players_group.draw(settings.SCR)
-            '''
+            
             renderer.drawByLayers()
 
             # show generation
             if not settings.HUMAN_CONTROL:
-                txt = f'Generation: {population.generation}. Population: {len(population.players)}'
+                txt = f'Generation: {population.generation}. Population: {len(groups.players_group)}'
                 text_renderer = font.render(txt, False, colors.WHITE)
                 settings.SCR.blit(text_renderer, (20,20))
 

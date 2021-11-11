@@ -1,6 +1,7 @@
 
 import pygame
 
+import colors
 import settings
 import groups
 
@@ -13,10 +14,12 @@ def drawTopLayer():
         pygame.draw.rect(settings.SCR, obj.color, (obj.rect.x, obj.rect.y, obj.rect.width, obj.rect.height))
 
 def drawPlayers():
+    print(f"drawing {len(groups.players_group)}")
     for player in groups.players_group:
         pygame.draw.rect(settings.SCR, player.color, (player.rect.x, player.rect.y, player.rect.width, player.rect.height))
 
 def drawByLayers():
+    settings.SCR.fill(colors.BLACK)
     drawFloors()
     drawTopLayer()
     drawPlayers()
