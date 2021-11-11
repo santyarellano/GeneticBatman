@@ -10,9 +10,10 @@ import settings
 from rect import Rect
 from player import Player
 
-def update_players(players):
+def update_players(players, ret_queue):
         for p in players:
             p.update()
+            ret_queue.put(players)
 
 class Population:
 
@@ -34,10 +35,14 @@ class Population:
 
             # create processes
             processes = []
-            for i in range(settings.PROCESSES):
-                p = mp.Process(target=update_players, args=(splits[i],))
+            ret_queue = mp.Queue()
+            for players in splits:
+                p = mp.Process(target=update_players, args=(players, ret_queue))
                 processes.append(p)
-                processes[i].start()
+
+            # start processes
+            for p in processes:
+                p.start()
             
             # join processes (wait for 'em to finish)
             for p in processes:
