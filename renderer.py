@@ -9,9 +9,8 @@ def drawFloors():
     for tile in groups.floor_tiles:
         pygame.draw.rect(settings.SCR, tile.color, (tile.rect.x, tile.rect.y, tile.rect.width, tile.rect.height))
 
-def drawTopLayer():
-    for obj in groups.top_layer:
-        pygame.draw.rect(settings.SCR, obj.color, (obj.rect.x, obj.rect.y, obj.rect.width, obj.rect.height))
+def drawGoal():
+    pygame.draw.rect(settings.SCR, settings.goal.color, (settings.goal.rect.x, settings.goal.rect.y, settings.goal.rect.width, settings.goal.rect.height))
 
 def drawPlayers():
     for player in groups.players_group:
@@ -23,5 +22,5 @@ def blackScreen():
 def drawByLayers():
     blackScreen()
     drawFloors()
-    drawTopLayer()
+    drawGoal()
     drawPlayers()

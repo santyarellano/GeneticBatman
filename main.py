@@ -51,7 +51,6 @@ if __name__ == '__main__':
                 goal = Goal(colors.YELLOW, settings.TILE_SIZE, settings.TILE_SIZE)
                 goal.rect.x = x * settings.TILE_SIZE
                 goal.rect.y = y * settings.TILE_SIZE
-                groups.top_layer.append(goal)
                 settings.goal = goal
                 settings.goals += 1
             elif cell == 9:  # player
