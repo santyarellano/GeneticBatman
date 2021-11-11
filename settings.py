@@ -1,22 +1,29 @@
+from enum import Enum, auto
+
+class Modes(Enum):
+    sequential = auto()
+    concurrent = auto()
+    parallel = auto()
+
 TITLE = "Genetic Level Checker"
 SCR_W = 0
 SCR_H = 0
 SCR = None
 FPS = 60
-CONCURRENT = False
-PROCESSES = 1
+MODE = Modes.concurrent
+PROCESSES = 4
 PRINT_DEBUG = True
 
 GRAVITY = 0.5
 HUMAN_CONTROL = False
 TILE_SIZE = 30
 LEVEL_NAME = 'level.csv'
-DEFAULT_BRAIN_SIZE = 500
+DEFAULT_BRAIN_SIZE = 1000
 MUTATION_RATE = 0.03
 ELITISM_RATIO = 3
-POPULATION_SIZE = 100
+POPULATION_SIZE = 500
 
-TIME_N_GENS = 10
+TIME_N_GENS = 5
 GENERATIONS_WITHOUT_RENDER = 1000
 
 OPTIMIZATION_FITNESS = False

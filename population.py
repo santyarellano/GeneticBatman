@@ -1,6 +1,7 @@
 import random
 import copy
 import multiprocessing as mp
+import threading
 import concurrent.futures
 import time
 import numpy as np
@@ -29,25 +30,25 @@ class Population:
             groups.players_group.append(p)
 
     def update(self): # this should work with multiprocessing
-        if settings.CONCURRENT: # still not working
-            # divide players for processes
+        if settings.MODE == settings.Modes.concurrent:
+            # divide players for threads
             splits = np.array_split(groups.players_group, settings.PROCESSES)
 
-            # create processes
-            processes = []
+            # create threads
+            threads = []
             for players in splits:
-                p = mp.Process(target=update_players, args=(players,))
-                processes.append(p)
+                th = threading.Thread(target=update_players, args=(players,))
+                threads.append(th)
 
-            # start processes
-            for p in processes:
-                p.start()
+            # start threads
+            for th in threads:
+                th.start()
             
-            # join processes (wait for 'em to finish)
-            for p in processes:
-                p.join()
+            # join threads (wait for 'em to finish)
+            for th in threads:
+                th.join()
         
-        else:
+        elif settings.MODE == settings.Modes.sequential:
             for p in groups.players_group:
                 p.update()
         
