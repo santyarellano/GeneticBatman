@@ -103,7 +103,7 @@ class Player(GameObject):
             return True
         return False
 
-    def update(self):
+    def update(self, floor_tiles, goal):
         if not self.is_dead and not self.reached_goal and not self.finished:
             # act according to brain if necessary
             if self.is_ai:
@@ -120,7 +120,7 @@ class Player(GameObject):
             self.y_spd += self.gravity
 
             # check if player is colliding with floor
-            for tile in groups.floor_tiles:
+            for tile in floor_tiles:
                 if helpers.rectsColliding(self.rect, tile.rect):
                     # check vertical collision
                     if self.rect.getCenterY() < tile.rect.y:  # from top
@@ -158,13 +158,13 @@ class Player(GameObject):
 
             # if optimizing, check if should stop
             if settings.OPTIMIZATION_FITNESS:
-                self_dist = helpers.dist_modular(self.rect.x, settings.goal.rect.x, self.rect.y, settings.goal.rect.y)
-                best_dist = helpers.dist_modular(settings.BEST_X, settings.goal.rect.x, settings.BEST_Y, settings.goal.rect.y)
+                self_dist = helpers.dist_modular(self.rect.x, goal.rect.x, self.rect.y, goal.rect.y)
+                best_dist = helpers.dist_modular(settings.BEST_X, goal.rect.x, settings.BEST_Y, goal.rect.y)
                 if self_dist < best_dist:
                     self.finished = True
                     self.reached_goal = True
 
             # check if reached goal
-            if helpers.objectsColliding(self, settings.goal):
+            if helpers.objectsColliding(self, goal):
                 self.reached_goal = True
                 self.finished = True

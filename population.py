@@ -3,6 +3,7 @@ import copy
 import multiprocessing as mp
 import threading
 import concurrent.futures
+from numba import cuda
 import time
 import numpy as np
 
@@ -12,8 +13,16 @@ import settings
 from rect import Rect
 from player import Player
 
-def update_players(players):
+def update_players(players, floor_tiles, goal):
         for i in range(len(players)):
+            players[i].update(floor_tiles, goal)
+
+def update_individual_player(player):
+    player.update()
+
+@cuda.jit
+def cuda_update_players(players):
+    for i in range(len(players)):
             players[i].update()
 
 class Population:
@@ -37,7 +46,7 @@ class Population:
             # create threads
             threads = []
             for players in splits:
-                th = threading.Thread(target=update_players, args=(players,))
+                th = threading.Thread(target=update_players, args=(players, groups.floor_tiles, settings.goal))
                 threads.append(th)
 
             # start threads
@@ -48,9 +57,32 @@ class Population:
             for th in threads:
                 th.join()
         
+        elif settings.MODE == settings.Modes.parallel:
+            # divide players for processes
+            splits = np.array_split(groups.players_group, settings.PROCESSES)
+
+            # create processes
+            processes = []
+            for players in splits:
+                # copy objects as it is insanely difficult to share memory with this approach :(
+                floor_copy = copy.deepcopy(groups.floor_tiles)
+                goal_copy = copy.deepcopy(settings.goal)
+
+                # create process
+                pr = mp.Process(target=update_players, args=(players, floor_copy, goal_copy))
+                processes.append(pr)
+
+            # start processes
+            for pr in processes:
+                pr.start()
+            
+            # join processes (wait for 'em to finish)
+            for pr in processes:
+                pr.join()
+        
         elif settings.MODE == settings.Modes.sequential:
             for p in groups.players_group:
-                p.update()
+                p.update(groups.floor_tiles, settings.goal)
         
     
     def tickSwap(self):
