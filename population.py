@@ -41,17 +41,20 @@ class Population:
     def update(self): # this should work with multiprocessing
         if settings.MODE == settings.Modes.concurrent:
             # divide players for threads
-            splits = np.array_split(groups.players_group, settings.PROCESSES)
+            splits = np.array_split(groups.players_group, settings.SPLITS_N)
 
-            # create threads
-            threads = []
-            for players in splits:
-                th = threading.Thread(target=update_players, args=(players, groups.floor_tiles, settings.goal))
-                threads.append(th)
+            if len(settings.SPLITS == 0): # create threads
+                for players in splits:
+                    th = threading.Thread(target=update_players, args=(players, groups.floor_tiles, settings.goal))
+                    settings.SPLITS.append(th)
 
-            # start threads
-            for th in threads:
-                th.start()
+                # start threads
+                for th in settings.SPLITS:
+                    th.start()
+            
+            else:
+                for th in settings.SPLITS:
+                    th.run()
             
             # join threads (wait for 'em to finish)
             for th in threads:
@@ -59,7 +62,7 @@ class Population:
         
         elif settings.MODE == settings.Modes.parallel:
             # divide players for processes
-            splits = np.array_split(groups.players_group, settings.PROCESSES)
+            splits = np.array_split(groups.players_group, settings.SPLITS_N)
 
             # create processes
             processes = []

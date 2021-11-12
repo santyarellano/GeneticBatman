@@ -10,9 +10,11 @@ SCR_W = 0
 SCR_H = 0
 SCR = None
 FPS = 60
-MODE = Modes.concurrent
-PROCESSES = 2
 PRINT_DEBUG = True
+
+MODE = Modes.concurrent
+SPLITS_N = 2
+SPLITS = []
 
 GRAVITY = 0.5
 HUMAN_CONTROL = False
