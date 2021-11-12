@@ -3,27 +3,33 @@ import copy
 import multiprocessing as mp
 import threading
 import concurrent.futures
-from numba import cuda
 import time
 import numpy as np
 
 import colors
 import groups
 import settings
+from split import Split
 from rect import Rect
 from player import Player
 
+
 def update_players(players, floor_tiles, goal):
-        for i in range(len(players)):
-            players[i].update(floor_tiles, goal)
+    for i in range(len(players)):
+        players[i].update(floor_tiles, goal)
+
 
 def update_individual_player(player):
     player.update()
 
+
+'''
 @cuda.jit
 def cuda_update_players(players):
     for i in range(len(players)):
-            players[i].update()
+        players[i].update()
+'''
+
 
 class Population:
 
@@ -34,32 +40,35 @@ class Population:
         self.gens_till_swap = settings.SWAP_FITNESS
         groups.players_group.clear()
         for i in range(size):
-            rec = Rect(settings.PLAYER_SPAWN_X, settings.PLAYER_SPAWN_Y, settings.TILE_SIZE, settings.TILE_SIZE)
-            p = Player(colors.GREEN, settings.GRAVITY, True, settings.OPTIMIZATION_FITNESS, rec)
+            rec = Rect(settings.PLAYER_SPAWN_X, settings.PLAYER_SPAWN_Y,
+                       settings.TILE_SIZE, settings.TILE_SIZE)
+            p = Player(colors.GREEN, settings.GRAVITY, True,
+                       settings.OPTIMIZATION_FITNESS, rec)
             groups.players_group.append(p)
 
-    def update(self): # this should work with multiprocessing
+    def update(self):  # this should work with multiprocessing
         if settings.MODE == settings.Modes.concurrent:
             # divide players for threads
-            splits = np.array_split(groups.players_group, settings.SPLITS_N)
+            chunks = np.array_split(groups.players_group, settings.SPLITS_N)
 
-            if len(settings.SPLITS == 0): # create threads
-                for players in splits:
-                    th = threading.Thread(target=update_players, args=(players, groups.floor_tiles, settings.goal))
+            if len(settings.SPLITS) == 0:  # create threads
+                for players in chunks:
+                    th = Split(target=update_players, args=(
+                        players, groups.floor_tiles, settings.goal))
                     settings.SPLITS.append(th)
 
                 # start threads
                 for th in settings.SPLITS:
                     th.start()
-            
+
             else:
                 for th in settings.SPLITS:
                     th.run()
-            
+
             # join threads (wait for 'em to finish)
-            for th in threads:
+            for th in settings.SPLITS:
                 th.join()
-        
+
         elif settings.MODE == settings.Modes.parallel:
             # divide players for processes
             splits = np.array_split(groups.players_group, settings.SPLITS_N)
@@ -72,22 +81,22 @@ class Population:
                 goal_copy = copy.deepcopy(settings.goal)
 
                 # create process
-                pr = mp.Process(target=update_players, args=(players, floor_copy, goal_copy))
+                pr = mp.Process(target=update_players, args=(
+                    players, floor_copy, goal_copy))
                 processes.append(pr)
 
             # start processes
             for pr in processes:
                 pr.start()
-            
+
             # join processes (wait for 'em to finish)
             for pr in processes:
                 pr.join()
-        
+
         elif settings.MODE == settings.Modes.sequential:
             for p in groups.players_group:
                 p.update(groups.floor_tiles, settings.goal)
-        
-    
+
     def tickSwap(self):
         self.gens_till_swap -= 1
         if self.gens_till_swap == 0:
@@ -97,7 +106,7 @@ class Population:
     def calculateFitness(self):
         for p in groups.players_group:
             p.calculateFitness()
-        
+
     def allFinished(self):
         for p in groups.players_group:
             if not p.finished:
@@ -109,7 +118,7 @@ class Population:
         fitness_list = []
         for p in groups.players_group:
             fitness_list.append(p.fitness)
-        
+
         fitness_list.sort(reverse=True)
         best_fitness = fitness_list[0]
         for p in groups.players_group:
@@ -133,7 +142,7 @@ class Population:
             child = self.getChildFromParents(parent1, parent2)
             groups.players_group.append(child)
             new_players.append(child)
-        
+
         # mutate this new players
         self.mutateChildren(new_players)
 
@@ -142,13 +151,14 @@ class Population:
         for p in top_players:
             new_players.append(p)
             groups.players_group.append(p)
-        
-        #groups.players_group.clear()
+
+        # groups.players_group.clear()
         groups.players_group = new_players
         self.generation += 1
         if settings.PRINT_DEBUG:
-            print(f'Gen: {self.generation}.\tFitness: {self.getAvgFitness()}.\tBest: {settings.BEST_DIST}.\tOpt: {settings.OPTIMIZATION_FITNESS}')
-    
+            print(
+                f'Gen: {self.generation}.\tFitness: {self.getAvgFitness()}.\tBest: {settings.BEST_DIST}.\tOpt: {settings.OPTIMIZATION_FITNESS}')
+
     def getTotalFitness(self):
         self.total_fitness = 0
         for p in groups.players_group:
@@ -162,7 +172,7 @@ class Population:
         fitness_list = []
         for p in groups.players_group:
             fitness_list.append(p.fitness)
-        
+
         fitness_list.sort(reverse=True)
         topN = []
         for i in range(settings.ELITISM_RATIO):
@@ -170,36 +180,40 @@ class Population:
 
         ret = []
         to_add = settings.ELITISM_RATIO
-        for p in groups.players_group: # get N top players
+        for p in groups.players_group:  # get N top players
             if p.fitness in topN and to_add > 0:
-                rec = Rect(settings.PLAYER_SPAWN_X, settings.PLAYER_SPAWN_Y, settings.TILE_SIZE, settings.TILE_SIZE)
-                new_p = Player(colors.RED, settings.GRAVITY, True, settings.OPTIMIZATION_FITNESS, rec)
+                rec = Rect(settings.PLAYER_SPAWN_X, settings.PLAYER_SPAWN_Y,
+                           settings.TILE_SIZE, settings.TILE_SIZE)
+                new_p = Player(colors.RED, settings.GRAVITY, True,
+                               settings.OPTIMIZATION_FITNESS, rec)
                 new_p.brain = p.brain.clone()
                 ret.append(new_p)
                 to_add -= 1
-        
+
         return ret
 
     def chooseParent(self):
         r = random.uniform(0.0, self.total_fitness)
-        
+
         pos = 0
-            
+
         for p in groups.players_group:
             pos += p.fitness
             if pos > r:
                 return p
 
         print(f"Choose parent got to a really weird point")
-    
+
     def getChildFromParents(self, par1: Player, par2: Player):
-        rec = Rect(settings.PLAYER_SPAWN_X, settings.PLAYER_SPAWN_Y, settings.TILE_SIZE, settings.TILE_SIZE)
-        child = Player(colors.GREEN, settings.GRAVITY, True, settings.OPTIMIZATION_FITNESS, rec)
+        rec = Rect(settings.PLAYER_SPAWN_X, settings.PLAYER_SPAWN_Y,
+                   settings.TILE_SIZE, settings.TILE_SIZE)
+        child = Player(colors.GREEN, settings.GRAVITY, True,
+                       settings.OPTIMIZATION_FITNESS, rec)
         child.brain = par1.brain.crossover(par2.brain)
 
         #child.brain = self.brain.clone()
         return child
-        
+
     def mutateChildren(self, players):
         for p in players:
             old = copy.copy(p.brain.instructions)
@@ -208,5 +222,5 @@ class Population:
                 #print("not mutated")
                 pass
             else:
-                #print("mutated")
+                # print("mutated")
                 pass
