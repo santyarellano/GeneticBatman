@@ -10,7 +10,7 @@ SCR_W = 0
 SCR_H = 0
 SCR = None
 FPS = 60
-MODE = Modes.parallel
+MODE = Modes.concurrent
 PROCESSES = 2
 PRINT_DEBUG = True
 
