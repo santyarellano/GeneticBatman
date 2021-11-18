@@ -35,6 +35,9 @@ if __name__ == '__main__':
     clock = pygame.time.Clock()
     start = time.time()
 
+    if settings.HUMAN_CONTROL:
+        settings.MODE = settings.Modes.sequential
+
     # load level
     x = 0
     y = 0
@@ -86,7 +89,7 @@ if __name__ == '__main__':
 
         #groups.players_group.update()
         if settings.HUMAN_CONTROL:
-            groups.players_group[0].update()
+            groups.players_group[0].update(groups.floor_tiles, settings.goal)
         else:
             settings.population.update()
 

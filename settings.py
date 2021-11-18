@@ -17,7 +17,7 @@ MODE = Modes.concurrent
 SPLITS_N = 2
 
 GRAVITY = 0.5
-HUMAN_CONTROL = False
+HUMAN_CONTROL = True
 TILE_SIZE = 30
 LEVEL_NAME = 'level.csv'
 DEFAULT_BRAIN_SIZE = 400
@@ -48,3 +48,7 @@ goal = None
 floor_tiles = 0
 goals = 0
 population = None
+flip_player_img = False
+player_run_pos = 0
+player_frame_time_def = 6
+player_frame_timer = player_frame_time_def
