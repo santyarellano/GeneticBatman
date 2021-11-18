@@ -17,7 +17,7 @@ MODE = Modes.concurrent
 SPLITS_N = 2
 
 GRAVITY = 0.5
-HUMAN_CONTROL = True
+HUMAN_CONTROL = False
 TILE_SIZE = 30
 LEVEL_NAME = 'level.csv'
 DEFAULT_BRAIN_SIZE = 400
