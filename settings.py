@@ -14,7 +14,6 @@ PRINT_DEBUG = True
 
 MODE = Modes.concurrent
 SPLITS_N = 2
-SPLITS = []
 
 GRAVITY = 0.5
 HUMAN_CONTROL = False

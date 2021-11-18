@@ -2,14 +2,12 @@ import random
 import copy
 import multiprocessing as mp
 import threading
-import concurrent.futures
 import time
 import numpy as np
 
 import colors
 import groups
 import settings
-from split import Split
 from rect import Rect
 from player import Player
 
@@ -46,29 +44,27 @@ class Population:
                        settings.OPTIMIZATION_FITNESS, rec)
             groups.players_group.append(p)
 
-    def update(self):  # this should work with multiprocessing
+    def update(self): 
+        # -------------------------------- CONCURRENT ----------------------------------
         if settings.MODE == settings.Modes.concurrent:
             # divide players for threads
             chunks = np.array_split(groups.players_group, settings.SPLITS_N)
+            threads = []
 
-            if len(settings.SPLITS) == 0:  # create threads
-                for players in chunks:
-                    th = Split(target=update_players, args=(
-                        players, groups.floor_tiles, settings.goal))
-                    settings.SPLITS.append(th)
+            for players in chunks:
+                th = threading.Thread(target=update_players, args=(
+                    players, groups.floor_tiles, settings.goal))
+                threads.append(th)
 
-                # start threads
-                for th in settings.SPLITS:
-                    th.start()
-
-            else:
-                for th in settings.SPLITS:
-                    th.run()
+            # start threads
+            for th in threads:
+                th.start()
 
             # join threads (wait for 'em to finish)
-            for th in settings.SPLITS:
+            for th in threads:
                 th.join()
 
+        # -------------------------------- PARALLEL ----------------------------------
         elif settings.MODE == settings.Modes.parallel:
             # divide players for processes
             splits = np.array_split(groups.players_group, settings.SPLITS_N)
@@ -93,6 +89,7 @@ class Population:
             for pr in processes:
                 pr.join()
 
+        # -------------------------------- SEQUENTIAL ----------------------------------
         elif settings.MODE == settings.Modes.sequential:
             for p in groups.players_group:
                 p.update(groups.floor_tiles, settings.goal)
