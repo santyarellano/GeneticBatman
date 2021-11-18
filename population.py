@@ -21,14 +21,6 @@ def update_individual_player(player):
     player.update()
 
 
-'''
-@cuda.jit
-def cuda_update_players(players):
-    for i in range(len(players)):
-        players[i].update()
-'''
-
-
 class Population:
 
     def __init__(self, size):

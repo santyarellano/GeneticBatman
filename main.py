@@ -76,6 +76,7 @@ if __name__ == '__main__':
 
     # MAIN LOOP
     quit = False
+    k_return_down = False
     while not quit:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -106,11 +107,14 @@ if __name__ == '__main__':
             else:
                 player.releaseRight()
         elif not settings.HUMAN_CONTROL:
-            if keys[pygame.K_RETURN]:
+            if keys[pygame.K_RETURN] and not k_return_down:
+                k_return_down = True
                 if settings.GENERATIONS_WITHOUT_RENDER >= 10000:
                     settings.GENERATIONS_WITHOUT_RENDER = 0
                 else:
                     settings.GENERATIONS_WITHOUT_RENDER = 10000
+            elif k_return_down and not keys[pygame.K_RETURN]:
+                k_return_down = False
 
         # draw in screen
         if settings.HUMAN_CONTROL or (population.generation > settings.GENERATIONS_WITHOUT_RENDER):
