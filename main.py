@@ -66,7 +66,7 @@ if __name__ == '__main__':
                     player.rect.y = settings.PLAYER_SPAWN_Y
                     groups.players_group.append(player)
                 else:
-                    population = Population(settings.POPULATION_SIZE)
+                    settings.population = Population(settings.POPULATION_SIZE)
                 
             else:
                 print("there's an error in the level data")
@@ -86,7 +86,7 @@ if __name__ == '__main__':
         if settings.HUMAN_CONTROL:
             groups.players_group[0].update()
         else:
-            population.update()
+            settings.population.update()
 
         # Key events (ONLY ALLOWED WHEN A HUMAN IS PLAYING)
         keys = pygame.key.get_pressed()
@@ -117,13 +117,13 @@ if __name__ == '__main__':
                 k_return_down = False
 
         # draw in screen
-        if settings.HUMAN_CONTROL or (population.generation > settings.GENERATIONS_WITHOUT_RENDER):
+        if settings.HUMAN_CONTROL or (settings.population.generation > settings.GENERATIONS_WITHOUT_RENDER):
             
             renderer.drawByLayers()
 
             # show generation
             if not settings.HUMAN_CONTROL:
-                txt = f'Generation: {population.generation}. Population: {len(groups.players_group)}'
+                txt = f'Generation: {settings.population.generation}. Population: {len(groups.players_group)}'
                 text_renderer = font.render(txt, False, colors.WHITE)
                 settings.SCR.blit(text_renderer, (20,20))
 
@@ -133,14 +133,14 @@ if __name__ == '__main__':
 
         # genetic algorithm
         if not settings.HUMAN_CONTROL:
-            if population.allFinished():
-                if population.generation == settings.TIME_N_GENS:
+            if settings.population.allFinished():
+                if settings.population.generation == settings.TIME_N_GENS:
                     print_time = time.time() - start
                     print(f'{settings.TIME_N_GENS} generations took: {print_time} secs.')
-                population.tickSwap()
-                population.calculateFitness()
+                settings.population.tickSwap()
+                settings.population.calculateFitness()
                 if not settings.OPTIMIZATION_FITNESS:
-                    population.setBestInstance()
-                population.naturalSelection()
+                    settings.population.setBestInstance()
+                settings.population.naturalSelection()
 
     pygame.quit()

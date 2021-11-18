@@ -136,7 +136,8 @@ class Population:
         self.mutateChildren(new_players)
 
         # keep best players from previous generation
-        top_players = self.getBestN()
+        top_players = self.getBestN(settings.ELITISM_RATIO)
+        self.champion = top_players[0]
         for p in top_players:
             new_players.append(p)
             groups.players_group.append(p)
@@ -156,7 +157,7 @@ class Population:
     def getAvgFitness(self):
         return self.total_fitness / len(groups.players_group)
 
-    def getBestN(self):
+    def getBestN(self, n):
         # get all fitnesses in a list
         fitness_list = []
         for p in groups.players_group:
@@ -164,11 +165,11 @@ class Population:
 
         fitness_list.sort(reverse=True)
         topN = []
-        for i in range(settings.ELITISM_RATIO):
+        for i in range(n):
             topN.append(fitness_list[i])
 
         ret = []
-        to_add = settings.ELITISM_RATIO
+        to_add = n
         for p in groups.players_group:  # get N top players
             if p.fitness in topN and to_add > 0:
                 rec = Rect(settings.PLAYER_SPAWN_X, settings.PLAYER_SPAWN_Y,

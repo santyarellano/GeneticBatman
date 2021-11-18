@@ -11,6 +11,7 @@ SCR_H = 0
 SCR = None
 FPS = 60
 PRINT_DEBUG = True
+SHOW_ONLY_BEST = True
 
 MODE = Modes.concurrent
 SPLITS_N = 2
@@ -25,7 +26,7 @@ ELITISM_RATIO = 3
 POPULATION_SIZE = 100
 
 TIME_N_GENS = 5
-GENERATIONS_WITHOUT_RENDER = 1000
+GENERATIONS_WITHOUT_RENDER = 1
 
 OPTIMIZATION_FITNESS = False
 SWAP_FITNESS = 10
@@ -42,3 +43,4 @@ BEST_FITNESS = 0
 goal = None
 floor_tiles = 0
 goals = 0
+population = None
