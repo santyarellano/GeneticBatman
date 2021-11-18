@@ -38,6 +38,8 @@ if __name__ == '__main__':
     # load level
     x = 0
     y = 0
+    settings.LEVEL_ROWS = len(level)
+    settings.LEVEL_COLS = len(level[0])
     for row in level:
         x = 0
         for cell in row:
