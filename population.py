@@ -70,6 +70,13 @@ class Population:
         # join processes (wait for 'em to finish)
         for pr in processes:
             pr.join()
+        
+        finished = 0
+        for chunk in splits:
+            for player in chunk:
+                if player.finished:
+                    finished += 1
+        print(finished)
 
     def update(self): 
         # -------------------------------- CONCURRENT ----------------------------------
