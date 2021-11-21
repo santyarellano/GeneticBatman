@@ -13,7 +13,7 @@ FPS = 60
 PRINT_DEBUG = True
 SHOW_ONLY_BEST = True
 
-MODE = Modes.concurrent
+MODE = Modes.parallel
 SPLITS_N = 1
 
 GRAVITY = 0.5

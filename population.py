@@ -60,6 +60,7 @@ class Population:
             scr_h = copy.copy(settings.SCR_H)
 
             # create process
+            
             pr = mp.Process(target=chunk_lifetime, args=(players_chunk, floor_copy, goal_copy, scr_w, scr_h))
             processes.append(pr)
 
