@@ -17,9 +17,23 @@ def update_players(players, floor_tiles, goal):
         players[i].update(floor_tiles, goal)
 
 
-def update_individual_player(player):
-    player.update()
+def update_individual_player(player, floor_tiles, goal):
+    player.update(floor_tiles, goal)
 
+def has_chunk_finished(chunk):
+    for player in chunk:
+        if not player.finished:
+            return False
+    return True
+
+def chunk_lifetime(chunk):
+    # copy objects as it is insanely difficult to share memory with this approach :(
+    floor_copy = copy.deepcopy(groups.floor_tiles)
+    goal_copy = copy.deepcopy(settings.goal)
+
+    for player in chunk:
+        while not player.finished:
+            update_individual_player(player, floor_copy, goal_copy)
 
 class Population:
 
@@ -35,6 +49,30 @@ class Population:
             p = Player(colors.GREEN, settings.GRAVITY, True,
                        settings.OPTIMIZATION_FITNESS, rec)
             groups.players_group.append(p)
+        
+        if settings.MODE == settings.Modes.parallel:
+            self.parallel_lifetime()
+
+    def parallel_lifetime(self):
+        # divide players for processes
+        splits = np.array_split(groups.players_group, settings.SPLITS_N)
+
+        # create processes
+        processes = []
+        for players_chunk in splits:
+            # create process
+            pr = mp.Process(target=chunk_lifetime, args=(players_chunk,))
+            processes.append(pr)
+
+        # start processes
+        for pr in processes:
+            pr.start()
+
+        # join processes (wait for 'em to finish)
+        for pr in processes:
+            pr.join()
+        
+        # print(f"{groups.players_group[0].brain_step} step") # <- debug
 
     def update(self): 
         # -------------------------------- CONCURRENT ----------------------------------
@@ -58,28 +96,7 @@ class Population:
 
         # -------------------------------- PARALLEL ----------------------------------
         elif settings.MODE == settings.Modes.parallel:
-            # divide players for processes
-            splits = np.array_split(groups.players_group, settings.SPLITS_N)
-
-            # create processes
-            processes = []
-            for players in splits:
-                # copy objects as it is insanely difficult to share memory with this approach :(
-                floor_copy = copy.deepcopy(groups.floor_tiles)
-                goal_copy = copy.deepcopy(settings.goal)
-
-                # create process
-                pr = mp.Process(target=update_players, args=(
-                    players, floor_copy, goal_copy))
-                processes.append(pr)
-
-            # start processes
-            for pr in processes:
-                pr.start()
-
-            # join processes (wait for 'em to finish)
-            for pr in processes:
-                pr.join()
+            print("Parallel manual update should never be called!")
 
         # -------------------------------- SEQUENTIAL ----------------------------------
         elif settings.MODE == settings.Modes.sequential:

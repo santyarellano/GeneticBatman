@@ -81,17 +81,20 @@ if __name__ == '__main__':
 
     # MAIN LOOP
     quit = False
+    should_move_to_sequential = False
     k_return_down = False
     while not quit:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 quit = True
 
-        #groups.players_group.update()
         if settings.HUMAN_CONTROL:
             groups.players_group[0].update(groups.floor_tiles, settings.goal)
-        else:
+        elif not settings.MODE == settings.Modes.parallel:
             settings.population.update()
+        elif settings.MODE == settings.Modes.parallel:
+            # should do nothing, as it should be done in parallel
+            pass
 
         # Key events (ONLY ALLOWED WHEN A HUMAN IS PLAYING)
         keys = pygame.key.get_pressed()
@@ -112,6 +115,9 @@ if __name__ == '__main__':
             else:
                 player.releaseRight()
         elif not settings.HUMAN_CONTROL:
+            if keys[pygame.K_s] and not should_move_to_sequential:
+                should_move_to_sequential = True
+
             if keys[pygame.K_RETURN] and not k_return_down:
                 k_return_down = True
                 if settings.GENERATIONS_WITHOUT_RENDER >= 10000:
@@ -147,5 +153,11 @@ if __name__ == '__main__':
                 if not settings.OPTIMIZATION_FITNESS:
                     settings.population.setBestInstance()
                 settings.population.naturalSelection()
+
+                if settings.MODE == settings.Modes.parallel:
+                    if should_move_to_sequential:
+                        settings.MODE = settings.Modes.sequential
+                    else:
+                        settings.population.parallel_lifetime()
 
     pygame.quit()
