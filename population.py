@@ -26,10 +26,11 @@ def has_chunk_finished(chunk):
             return False
     return True
 
-def chunk_lifetime(chunk, floor_tiles, goal, scr_w, scr_h):
+def chunk_lifetime(chunk, floor_tiles, goal, scr_w, scr_h, ret_players):
     for player in chunk:
         while not player.finished:
             update_individual_player(player, floor_tiles, goal, scr_w, scr_h)
+        ret_players.append(player)
 
 class Population:
 
@@ -38,7 +39,13 @@ class Population:
         self.generation = 1
         self.total_fitness = 0
         self.gens_till_swap = settings.SWAP_FITNESS
-        groups.players_group.clear()
+
+        # Clear the players group
+        if settings.MODE == settings.Modes.parallel:
+            groups.players_group[:] = []
+        else:
+            groups.players_group.clear()
+
         for i in range(size):
             rec = Rect(settings.PLAYER_SPAWN_X, settings.PLAYER_SPAWN_Y,
                        settings.TILE_SIZE, settings.TILE_SIZE)
@@ -52,6 +59,7 @@ class Population:
 
         # create processes
         processes = []
+        ret_players = settings.mem_manager.list() # shared memory list to use in processes
         for players_chunk in splits:
             # copy objects as it is insanely difficult to share memory with this approach :(
             floor_copy = copy.deepcopy(groups.floor_tiles)
@@ -61,7 +69,7 @@ class Population:
 
             # create process
             
-            pr = mp.Process(target=chunk_lifetime, args=(players_chunk, floor_copy, goal_copy, scr_w, scr_h))
+            pr = mp.Process(target=chunk_lifetime, args=(players_chunk, floor_copy, goal_copy, scr_w, scr_h, ret_players))
             processes.append(pr)
 
         # start processes
@@ -72,12 +80,14 @@ class Population:
         for pr in processes:
             pr.join()
         
+        groups.players_group = list(ret_players)
+        '''
         finished = 0
-        for chunk in splits:
-            for player in chunk:
-                if player.finished:
-                    finished += 1
-        print(finished)
+        for player in ret_players:
+            if player.finished:
+                finished += 1
+        print(f"finished: {finished}")
+        '''
 
     def update(self): 
         # -------------------------------- CONCURRENT ----------------------------------

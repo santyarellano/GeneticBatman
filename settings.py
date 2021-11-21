@@ -14,22 +14,25 @@ PRINT_DEBUG = True
 SHOW_ONLY_BEST = True
 
 MODE = Modes.parallel
-SPLITS_N = 1
+SPLITS_N = 5
 
 GRAVITY = 0.5
 HUMAN_CONTROL = False
 TILE_SIZE = 30
 LEVEL_NAME = 'level.csv'
+
+POPULATION_SIZE = 1000
 DEFAULT_BRAIN_SIZE = 400
+
 MUTATION_RATE = 0.03
 ELITISM_RATIO = 3
-POPULATION_SIZE = 100
+
 
 LEVEL_ROWS = 0
 LEVEL_COLS = 0
 BCKG_TILE_SCALE = 4
 
-TIME_N_GENS = 10
+TIME_N_GENS = 5
 GENERATIONS_WITHOUT_RENDER = 10 # this should always be greater than 0
 
 OPTIMIZATION_FITNESS = False
@@ -52,3 +55,4 @@ flip_player_img = False
 player_run_pos = 0
 player_frame_time_def = 6
 player_frame_timer = player_frame_time_def
+mem_manager = None

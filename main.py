@@ -2,6 +2,7 @@
 import os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
+import multiprocessing as mp
 import time
 pygame.init()
 
@@ -20,6 +21,7 @@ from population import Population
 if __name__ == '__main__':
 
     # setup
+    settings.mem_manager = mp.Manager()
     level = level_reader.getLevel(settings.LEVEL_NAME)
     settings.SCR_W = len(level[0]) * settings.TILE_SIZE
     settings.SCR_H = len(level) * settings.TILE_SIZE
