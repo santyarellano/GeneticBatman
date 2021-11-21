@@ -93,8 +93,7 @@ if __name__ == '__main__':
         elif not settings.MODE == settings.Modes.parallel:
             settings.population.update()
         elif settings.MODE == settings.Modes.parallel:
-            # should do nothing, as it should be done in parallel
-            pass
+            settings.population.parallel_lifetime()
 
         # Key events (ONLY ALLOWED WHEN A HUMAN IS PLAYING)
         keys = pygame.key.get_pressed()
@@ -155,7 +154,7 @@ if __name__ == '__main__':
                 settings.population.naturalSelection()
 
                 if settings.MODE == settings.Modes.parallel:
-                    if should_move_to_sequential:
+                    if not settings.MODE == settings.Modes.sequential and should_move_to_sequential:
                         settings.MODE = settings.Modes.sequential
                     else:
                         settings.population.parallel_lifetime()

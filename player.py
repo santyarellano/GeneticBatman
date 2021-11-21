@@ -103,7 +103,7 @@ class Player(GameObject):
             return True
         return False
 
-    def update(self, floor_tiles, goal):
+    def update(self, floor_tiles, goal, scr_w, scr_h):
         if not self.is_dead and not self.reached_goal and not self.finished:
             # act according to brain if necessary
             if self.is_ai:
@@ -116,6 +116,7 @@ class Player(GameObject):
                 else:
                     self.executeNextBrainStep()
 
+            
             self.rect.y += self.y_spd
             self.y_spd += self.gravity
 
@@ -149,10 +150,10 @@ class Player(GameObject):
             self.rect.x += self.dir * self.walk_spd
 
             # check if dead
-            if self.rect.x > settings.SCR_W or (self.rect.x + self.rect.width) < 0:
+            if self.rect.x > scr_w or (self.rect.x + self.rect.width) < 0:
                 self.is_dead = True
                 self.finished = True
-            if self.rect.y > settings.SCR_H or (self.rect.y + self.rect.height) < 0:
+            if self.rect.y > scr_h or (self.rect.y + self.rect.height) < 0:
                 self.is_dead = True
                 self.finished = True
 
@@ -168,3 +169,4 @@ class Player(GameObject):
             if helpers.objectsColliding(self, goal):
                 self.reached_goal = True
                 self.finished = True
+

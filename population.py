@@ -17,8 +17,8 @@ def update_players(players, floor_tiles, goal):
         players[i].update(floor_tiles, goal)
 
 
-def update_individual_player(player, floor_tiles, goal):
-    player.update(floor_tiles, goal)
+def update_individual_player(player, floor_tiles, goal, scr_w, scr_h):
+    player.update(floor_tiles, goal, scr_w, scr_h)
 
 def has_chunk_finished(chunk):
     for player in chunk:
@@ -26,14 +26,10 @@ def has_chunk_finished(chunk):
             return False
     return True
 
-def chunk_lifetime(chunk):
-    # copy objects as it is insanely difficult to share memory with this approach :(
-    floor_copy = copy.deepcopy(groups.floor_tiles)
-    goal_copy = copy.deepcopy(settings.goal)
-
+def chunk_lifetime(chunk, floor_tiles, goal, scr_w, scr_h):
     for player in chunk:
         while not player.finished:
-            update_individual_player(player, floor_copy, goal_copy)
+            update_individual_player(player, floor_tiles, goal, scr_w, scr_h)
 
 class Population:
 
@@ -49,9 +45,6 @@ class Population:
             p = Player(colors.GREEN, settings.GRAVITY, True,
                        settings.OPTIMIZATION_FITNESS, rec)
             groups.players_group.append(p)
-        
-        if settings.MODE == settings.Modes.parallel:
-            self.parallel_lifetime()
 
     def parallel_lifetime(self):
         # divide players for processes
@@ -60,8 +53,14 @@ class Population:
         # create processes
         processes = []
         for players_chunk in splits:
+            # copy objects as it is insanely difficult to share memory with this approach :(
+            floor_copy = copy.deepcopy(groups.floor_tiles)
+            goal_copy = copy.deepcopy(settings.goal)
+            scr_w = copy.copy(settings.SCR_W)
+            scr_h = copy.copy(settings.SCR_H)
+
             # create process
-            pr = mp.Process(target=chunk_lifetime, args=(players_chunk,))
+            pr = mp.Process(target=chunk_lifetime, args=(players_chunk, floor_copy, goal_copy, scr_w, scr_h))
             processes.append(pr)
 
         # start processes
@@ -71,8 +70,6 @@ class Population:
         # join processes (wait for 'em to finish)
         for pr in processes:
             pr.join()
-        
-        # print(f"{groups.players_group[0].brain_step} step") # <- debug
 
     def update(self): 
         # -------------------------------- CONCURRENT ----------------------------------

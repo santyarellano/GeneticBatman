@@ -13,7 +13,7 @@ FPS = 60
 PRINT_DEBUG = True
 SHOW_ONLY_BEST = True
 
-MODE = Modes.sequential
+MODE = Modes.parallel
 SPLITS_N = 1
 
 GRAVITY = 0.5
@@ -30,7 +30,7 @@ LEVEL_COLS = 0
 BCKG_TILE_SCALE = 4
 
 TIME_N_GENS = 10
-GENERATIONS_WITHOUT_RENDER = 1000 # this should always be greater than 0
+GENERATIONS_WITHOUT_RENDER = 10 # this should always be greater than 0
 
 OPTIMIZATION_FITNESS = False
 SWAP_FITNESS = 10
