@@ -12,9 +12,9 @@ from rect import Rect
 from player import Player
 
 
-def update_players(players, floor_tiles, goal):
+def update_players(players, floor_tiles, goal, scr_w, scr_h):
     for i in range(len(players)):
-        players[i].update(floor_tiles, goal)
+        players[i].update(floor_tiles, goal, scr_w, scr_h)
 
 
 def update_individual_player(player, floor_tiles, goal, scr_w, scr_h):
@@ -87,7 +87,7 @@ class Population:
 
             for players in chunks:
                 th = threading.Thread(target=update_players, args=(
-                    players, groups.floor_tiles, settings.goal))
+                    players, groups.floor_tiles, settings.goal, settings.SCR_W, settings.SCR_H))
                 threads.append(th)
 
             # start threads
@@ -105,7 +105,7 @@ class Population:
         # -------------------------------- SEQUENTIAL ----------------------------------
         elif settings.MODE == settings.Modes.sequential:
             for p in groups.players_group:
-                p.update(groups.floor_tiles, settings.goal)
+                p.update(groups.floor_tiles, settings.goal, settings.SCR_W, settings.SCR_H)
 
     def tickSwap(self):
         self.gens_till_swap -= 1
