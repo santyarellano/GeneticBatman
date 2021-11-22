@@ -1,4 +1,5 @@
 from enum import Enum, auto
+import multiprocessing as mp
 
 class Modes(Enum):
     sequential = auto()
@@ -14,15 +15,15 @@ PRINT_DEBUG = True
 SHOW_ONLY_BEST = True
 
 MODE = Modes.parallel
-SPLITS_N = 4
+SPLITS_N = -1
 
 GRAVITY = 0.5
 HUMAN_CONTROL = False
 TILE_SIZE = 30
 LEVEL_NAME = 'level.csv'
 
-POPULATION_SIZE = 100
-DEFAULT_BRAIN_SIZE = 400
+POPULATION_SIZE = 7000
+DEFAULT_BRAIN_SIZE = 100
 
 MUTATION_RATE = 0.03
 ELITISM_RATIO = 3

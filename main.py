@@ -31,6 +31,10 @@ if __name__ == '__main__':
     pygame.font.init()
     font = pygame.font.SysFont('Comic Sans MS', 30)
 
+    # set splits_n to cpus available if it was -1
+    if settings.MODE == settings.Modes.parallel and settings.SPLITS_N == -1:
+        settings.SPLITS_N = mp.cpu_count()
+
     level = level_reader.getLevel(settings.LEVEL_NAME)
 
     pygame.display.set_caption(settings.TITLE)
