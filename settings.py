@@ -20,7 +20,7 @@ SPLITS_N = -1
 GRAVITY = 0.5
 HUMAN_CONTROL = False
 TILE_SIZE = 30
-LEVEL_NAME = 'easy_level.csv'
+LEVEL_NAME = 'level.csv'
 
 POPULATION_SIZE = 100
 DEFAULT_BRAIN_SIZE = 400
@@ -34,7 +34,7 @@ LEVEL_COLS = 0
 BCKG_TILE_SCALE = 4
 
 TIME_N_GENS = 3
-GENERATIONS_WITHOUT_RENDER = 10 # this should always be greater than 0
+GENERATIONS_WITHOUT_RENDER = 1000 # this should always be greater than 0
 
 OPTIMIZATION_FITNESS = False
 SWAP_FITNESS = 10
@@ -46,6 +46,8 @@ BEST_X = 0
 BEST_Y = 0
 BEST_DIST = 0
 BEST_FITNESS = 0
+
+REACHED_GOAL_AT_GEN = -1
 
 # data globals
 goal = None
