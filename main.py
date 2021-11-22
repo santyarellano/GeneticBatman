@@ -21,6 +21,7 @@ from population import Population
 if __name__ == '__main__':
 
     # setup
+    print(f"Running in {settings.MODE}.")
     settings.mem_manager = mp.Manager()
     settings.ret_players = settings.mem_manager.list() # shared memory list to use in processes
     level = level_reader.getLevel(settings.LEVEL_NAME)
