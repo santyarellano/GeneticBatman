@@ -40,18 +40,33 @@ class Population:
         self.total_fitness = 0
         self.gens_till_swap = settings.SWAP_FITNESS
 
-        # Clear the players group
-        if settings.MODE == settings.Modes.parallel:
-            groups.players_group[:] = []
-        else:
-            groups.players_group.clear()
-
         for i in range(size):
             rec = Rect(settings.PLAYER_SPAWN_X, settings.PLAYER_SPAWN_Y,
                        settings.TILE_SIZE, settings.TILE_SIZE)
             p = Player(colors.GREEN, settings.GRAVITY, True,
                        settings.OPTIMIZATION_FITNESS, rec)
             groups.players_group.append(p)
+        
+        # prepare copies for parallelism if necessary
+        '''
+        if settings.MODE == settings.Modes.parallel:
+            self.floor_copies = []
+            self.goal_copies = []
+            self.scr_w_copies = []
+            self.scr_h_copies = []
+            for i in range(settings.SPLITS_N):
+                floor_copy = copy.deepcopy(groups.floor_tiles)
+                self.floor_copies.append(floor_copy)
+
+                goal_copy = copy.deepcopy(settings.goal)
+                self.goal_copies.append(goal_copy)
+
+                scr_w = copy.copy(settings.SCR_W)
+                self.scr_w_copies.append(scr_w)
+
+                scr_h = copy.copy(settings.SCR_H)
+                self.scr_h_copies.append(scr_h)
+        '''
 
     def parallel_lifetime(self):
         # divide players for processes
@@ -59,17 +74,10 @@ class Population:
 
         # create processes
         processes = []
-        ret_players = settings.mem_manager.list() # shared memory list to use in processes
         for players_chunk in splits:
-            # copy objects as it is insanely difficult to share memory with this approach :(
-            floor_copy = copy.deepcopy(groups.floor_tiles)
-            goal_copy = copy.deepcopy(settings.goal)
-            scr_w = copy.copy(settings.SCR_W)
-            scr_h = copy.copy(settings.SCR_H)
 
             # create process
-            
-            pr = mp.Process(target=chunk_lifetime, args=(players_chunk, floor_copy, goal_copy, scr_w, scr_h, ret_players))
+            pr = mp.Process(target=chunk_lifetime, args=(players_chunk, groups.floor_tiles, settings.goal, settings.SCR_W, settings.SCR_W, settings.ret_players))
             processes.append(pr)
 
         # start processes
@@ -80,14 +88,7 @@ class Population:
         for pr in processes:
             pr.join()
         
-        groups.players_group = list(ret_players)
-        '''
-        finished = 0
-        for player in ret_players:
-            if player.finished:
-                finished += 1
-        print(f"finished: {finished}")
-        '''
+        groups.players_group = list(settings.ret_players)
 
     def update(self): 
         # -------------------------------- CONCURRENT ----------------------------------

@@ -22,6 +22,7 @@ if __name__ == '__main__':
 
     # setup
     settings.mem_manager = mp.Manager()
+    settings.ret_players = settings.mem_manager.list() # shared memory list to use in processes
     level = level_reader.getLevel(settings.LEVEL_NAME)
     settings.SCR_W = len(level[0]) * settings.TILE_SIZE
     settings.SCR_H = len(level) * settings.TILE_SIZE
@@ -118,6 +119,7 @@ if __name__ == '__main__':
         elif not settings.HUMAN_CONTROL:
             if keys[pygame.K_s] and not should_move_to_sequential:
                 should_move_to_sequential = True
+                print("Moving to sequential mode")
 
             if keys[pygame.K_RETURN] and not k_return_down:
                 k_return_down = True
@@ -127,6 +129,11 @@ if __name__ == '__main__':
                     settings.GENERATIONS_WITHOUT_RENDER = 10000
             elif k_return_down and not keys[pygame.K_RETURN]:
                 k_return_down = False
+
+        # check if parallelism should stop so we can render
+        if settings.population.generation > settings.GENERATIONS_WITHOUT_RENDER:
+            if settings.MODE == settings.Modes.parallel:
+                should_move_to_sequential = True
 
         # draw in screen
         if settings.HUMAN_CONTROL or (settings.population.generation > settings.GENERATIONS_WITHOUT_RENDER):
