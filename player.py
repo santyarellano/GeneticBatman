@@ -169,7 +169,7 @@ class Player(GameObject):
             if helpers.objectsColliding(self, goal):
                 self.reached_goal = True
                 self.finished = True
-                if settings.REACHED_GOAL_AT_GEN == -1:
+                if not settings.HUMAN_CONTROL and settings.REACHED_GOAL_AT_GEN == -1:
                     settings.REACHED_GOAL_AT_GEN = settings.population.generation
                     print(f"Reached goal at gen: {settings.REACHED_GOAL_AT_GEN}")
 

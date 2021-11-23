@@ -18,7 +18,7 @@ MODE = Modes.sequential
 SPLITS_N = -1
 
 GRAVITY = 0.5
-HUMAN_CONTROL = False
+HUMAN_CONTROL = True
 TILE_SIZE = 30
 LEVEL_NAME = 'level.csv'
 

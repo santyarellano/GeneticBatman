@@ -97,7 +97,7 @@ if __name__ == '__main__':
                 quit = True
 
         if settings.HUMAN_CONTROL:
-            groups.players_group[0].update(groups.floor_tiles, settings.goal)
+            groups.players_group[0].update(groups.floor_tiles, settings.goal, settings.SCR_W, settings.SCR_H)
         elif not settings.MODE == settings.Modes.parallel:
             settings.population.update()
         elif settings.MODE == settings.Modes.parallel:
@@ -136,7 +136,7 @@ if __name__ == '__main__':
                 k_return_down = False
 
         # check if parallelism should stop so we can render
-        if settings.population.generation > settings.GENERATIONS_WITHOUT_RENDER:
+        if not settings.HUMAN_CONTROL and settings.population.generation > settings.GENERATIONS_WITHOUT_RENDER:
             if settings.MODE == settings.Modes.parallel:
                 should_move_to_sequential = True
 
