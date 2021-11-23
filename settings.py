@@ -12,13 +12,13 @@ SCR_H = 0
 SCR = None
 FPS = 60
 PRINT_DEBUG = False
-SHOW_ONLY_BEST = True
+SHOW_ONLY_BEST = False
 
 MODE = Modes.sequential
 SPLITS_N = -1
 
 GRAVITY = 0.5
-HUMAN_CONTROL = True
+HUMAN_CONTROL = False
 TILE_SIZE = 30
 LEVEL_NAME = 'level.csv'
 
